@@ -1,1181 +1,2530 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Editor SnapVISUAL</title>
-    <style>
-        /* Estilos Generales y Reset Básico */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ariel Clean - Servicios de Limpieza</title>
+  <style>
+    /* ===== ESTILOS GENERALES ===== */
+    *{margin:0;padding:0;box-sizing:border-box;}
+    html{scroll-behavior:smooth;}
+    body{font-family:'Montserrat',sans-serif;line-height:1.6;color:#333;background:#f4f4f4;}
+    .container{width:90%;max-width:1100px;margin:auto;padding:1rem;}
+    
+    /* ===== HEADER ===== */
+    header{background:#fff;box-shadow:0 2px 5px rgba(0,0,0,.1);position:sticky;top:0;z-index:50;display:flex;justify-content:space-between;align-items:center;padding:.75rem 1rem;}
+    #logo{height:5rem;}
+    .action-buttons{display:flex;gap:10px;}
+    .action-btn{padding:10px 20px;border:none;border-radius:5px;cursor:pointer;font-weight:bold;color:#fff;transition:.3s;}
+    .publish-btn{background:#4CAF50;}
+    .reset-btn{background:#f44336;}
+    .action-btn:hover{transform:translateY(-2px);box-shadow:0 4px 8px rgba(0,0,0,.2);}
 
-        html {
-            scroll-behavior: smooth;
-        }
+    /* ===== PASARELA DE SLIDES ===== */
+    #hero{position:relative;width:100%;height:85vh;overflow:hidden;}
+    .hero-slides{display:flex;width:500%;height:100%;transition:transform .8s ease;}
+    .hero-slide{width:20%;height:100%;display:flex;align-items:center;justify-content:center;background-size:100% 100%;}
+    .hero-slide.active{animation:zoomBg 30s ease-in-out infinite;}
 
-        body {
-            font-family: 'Montserrat', sans-serif;
-            line-height: 1.6;
-            color: #333;
-            background-color: #f4f4f4;
-        }
+    /* RUTAS DE IMÁGENES POR DEFECTO */
+    .slide-1{background-image:url('imagenes/Portada.jpg');}
+    .slide-2{background-image:url('imagenes/limpiezaMuebles.jpg');}
+    .slide-3{background-image:url('imagenes/Promocion.jpg');}
+    .slide-4{background-image:url('imagenes/Sofalisto.jpg');}
+    .slide-5{background-image:url('imagenes/producto_fondo.jpg');}
 
-        .container {
-            width: 90%;
-            max-width: 1100px;
-            margin-left: auto;
-            margin-right: auto;
-            padding-left: 1rem;
-            padding-right: 1rem;
-        }
+    @keyframes zoomBg{
+      0%{background-size:100% 100%;}
+      50%{background-size:110% 110%;}
+      100%{background-size:100% 100%;}
+    }
 
-        /* Header */
-        header {
-            background: #fff;
-            padding-top: 0.75rem;
-            padding-bottom: 0.75rem;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            position: sticky;
-            top: 0;
-            z-index: 50;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+    /* ===== ANIMACIONES MEJORADAS ===== */
+    /* SLIDE 1: Animaciones específicas */
+    .slide-1 .main-title{transform:translateY(-100px);opacity:0;}
+    .slide-1.active .main-title{animation:dropDown 1s both .2s;}
+    
+    .slide-1 .sub-title{transform:translateX(100px);opacity:0;}
+    .slide-1.active .sub-title{animation:slideInRight 1s both .4s;}
+    
+    .slide-1 .schedule{opacity:0;display:flex;align-items:center;justify-content:center;gap:.5rem;}
+    .slide-1.active .schedule{animation:fadeIn 1s both .6s;}
+    
+    .slide-1 .clock-icon{transform:translateX(-50px);opacity:0;}
+    .slide-1.active .clock-icon{animation:slideInLeft 1s both .8s;}
+    
+    .slide-1 .schedule-text{transform:translateX(50px);opacity:0;}
+    .slide-1.active .schedule-text{animation:slideInRight 1s both .8s;}
 
-        .header-container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            max-width: 72rem;
-            width: 100%;
-        }
+    /* SLIDE 2: Botones redondos y animaciones secuenciales */
+    .slide-2 .offer-title{transform:translateY(-100px);opacity:0;}
+    .slide-2.active .offer-title{animation:dropDown 1s both .2s;}
+    
+    .slide-2 .service-buttons{opacity:0;}
+    .slide-2.active .service-buttons{animation:fadeIn 0.5s both .5s;display:flex;flex-direction:column;gap:.5rem;align-items:center;}
+    
+    /* Animación secuencial para botones */
+    .slide-2 .service-buttons button{opacity:0;transform:translateY(20px);}
+    .slide-2.active .service-buttons button:nth-child(1){animation:fadeInUp 0.5s both 0.7s;}
+    .slide-2.active .service-buttons button:nth-child(2){animation:fadeInUp 0.5s both 0.9s;}
+    .slide-2.active .service-buttons button:nth-child(3){animation:fadeInUp 0.5s both 1.1s;}
+    .slide-2.active .service-buttons button:nth-child(4){animation:fadeInUp 0.5s both 1.3s;}
+    .slide-2.active .service-buttons button:nth-child(5){animation:fadeInUp 0.5s both 1.5s;}
+    .slide-2.active .service-buttons button:nth-child(6){animation:fadeInUp 0.5s both 1.7s;}
+    .slide-2.active .service-buttons button:nth-child(7){animation:fadeInUp 0.5s both 1.9s;}
 
+    /* Botones redondeados */
+    .slide-2 .service-buttons button{
+      border-radius:50px;padding:.75rem 1.5rem;min-width:280px;border:2px solid #fff;
+      background:rgba(255,255,255,.15);color:#fff;font-weight:600;cursor:pointer;transition:background .3s;
+    }
+    .slide-2 .service-buttons button:hover{background:#fff;color:#222;}
+
+    /* SLIDE 3: Aspiradora animada */
+    .slide-3 .offer-title{transform:translateX(-100px);opacity:0;}
+    .slide-3.active .offer-title{animation:slideInLeft 1s both .2s;}
+    
+    .slide-3 .offer-subtitle{transform:translateX(100px);opacity:0;}
+    .slide-3.active .offer-subtitle{animation:slideInRight 1s both .4s;}
+    
+    .slide-3 .vacuum{opacity:0;}
+    .slide-3.active .vacuum{animation:moveVacuum 3s ease-in-out 1.2s both;}
+    
+    .slide-3 .whatsapp-btn{opacity:0;}
+    .slide-3.active .whatsapp-btn{animation:fadeIn 1s both 4.2s;display:inline-flex;align-items:center;gap:.5rem;background:#25D366;color:#fff;padding:.75rem 1.5rem;border-radius:50px;text-decoration:none;font-weight:700;}
+
+    /* SLIDE 4: Video */
+    .slide-4 .video-box{opacity:0;transform:scale(0.8);}
+    .slide-4.active .video-box{animation:fadeIn 1s both .3s;width:80%;max-width:700px;margin:0 auto;border-radius:12px;overflow:hidden;box-shadow:0 8px 25px rgba(0,0,0,.5);}
+    .slide-4 video{width:100%;display:block;}
+    .slide-4 .cotiza-btn{opacity:0;}
+    .slide-4.active .cotiza-btn{animation:fadeIn 1s both 1s;display:inline-block;margin-top:1.5rem;background:#25D366;color:#fff;padding:.75rem 2rem;border-radius:50px;text-decoration:none;font-weight:700;}
+
+    /* SLIDE 5: E-commerce - MODIFICADO CON SCROLL HORIZONTAL */
+    .slide-5 .ecommerce-content {
+      width: 95%;
+      max-width: 100%;
+      margin: 0 auto;
+      padding: 20px;
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 15px;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+      height: 85%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .slide-5 .rotating-banner {
+      background: linear-gradient(135deg, #4CAF50, #2196F3);
+      color: white;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      text-align: center;
+      font-size: 1.5rem;
+      font-weight: bold;
+      min-height: 70px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .slide-5 .banner-message {
+      position: absolute;
+      opacity: 0;
+      transition: opacity 1s ease-in-out;
+    }
+
+    .slide-5 .banner-message.active {
+      opacity: 1;
+    }
+
+    .slide-5 .products-scroll-container {
+      overflow-x: auto;
+      white-space: nowrap;
+      padding: 15px 5px;
+      margin-bottom: 10px;
+      flex-grow: 1;
+      scroll-behavior: smooth;
+    }
+
+    .slide-5 .products-grid {
+      display: inline-flex;
+      gap: 20px;
+      padding: 0 10px;
+    }
+
+    .slide-5 .product-card {
+      background: white;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      transition: transform 0.3s, box-shadow 0.3s;
+      width: 250px;
+      display: inline-block;
+      vertical-align: top;
+      white-space: normal;
+    }
+
+    .slide-5 .product-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+    }
+
+    .slide-5 .product-image {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+      border-bottom: 1px solid #eee;
+      cursor: pointer;
+    }
+
+    .slide-5 .product-info {
+      padding: 15px;
+    }
+
+    .slide-5 .product-name {
+      font-size: 1.2rem;
+      font-weight: bold;
+      margin-bottom: 10px;
+      color: #2c3e50;
+    }
+
+    .slide-5 .product-price {
+      color: #e74c3c;
+      font-size: 1.3rem;
+      font-weight: bold;
+      margin-bottom: 15px;
+    }
+
+    .slide-5 .view-detail-btn {
+      background: #2196F3;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 5px;
+      cursor: pointer;
+      width: 100%;
+      font-weight: bold;
+      transition: background 0.3s;
+    }
+
+    .slide-5 .view-detail-btn:hover {
+      background: #1976D2;
+    }
+
+    /* Scrollbar personalizado para el contenedor de productos */
+    .slide-5 .products-scroll-container::-webkit-scrollbar {
+      height: 10px;
+    }
+
+    .slide-5 .products-scroll-container::-webkit-scrollbar-track {
+      background: #f1f1f1;
+      border-radius: 5px;
+    }
+
+    .slide-5 .products-scroll-container::-webkit-scrollbar-thumb {
+      background: #888;
+      border-radius: 5px;
+    }
+
+    .slide-5 .products-scroll-container::-webkit-scrollbar-thumb:hover {
+      background: #555;
+    }
+
+    /* Modal de producto MEJORADO */
+    .product-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.7);
+      z-index: 1000;
+      overflow-y: auto;
+    }
+
+    .product-modal-content {
+      background: white;
+      margin: 5% auto;
+      padding: 20px;
+      border-radius: 10px;
+      width: 90%;
+      max-width: 800px;
+      position: relative;
+    }
+
+    .product-modal-close {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      font-size: 24px;
+      cursor: pointer;
+      color: #555;
+    }
+
+    .product-modal-body {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+
+    .product-modal-image {
+      flex: 1;
+      min-width: 300px;
+    }
+
+    .product-modal-image img {
+      width: 100%;
+      border-radius: 8px;
+    }
+
+    .product-modal-details {
+      flex: 1;
+      min-width: 300px;
+    }
+
+    .product-modal-name {
+      font-size: 1.5rem;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    .product-modal-price {
+      font-size: 1.3rem;
+      color: #4CAF50;
+      font-weight: bold;
+      margin-bottom: 20px;
+    }
+
+    .product-description {
+      font-size: 1.1rem;
+      line-height: 1.6;
+      color: #555;
+      margin-bottom: 20px;
+      font-family: 'Arial', sans-serif;
+    }
+
+    .quantity-selector {
+      display: flex;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .quantity-selector label {
+      margin-right: 10px;
+      font-weight: bold;
+    }
+
+    .quantity-selector input {
+      width: 60px;
+      padding: 5px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      text-align: center;
+    }
+
+    .total-price {
+      font-size: 1.3rem;
+      font-weight: bold;
+      margin-bottom: 20px;
+      color: #2196F3;
+    }
+
+    .modal-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .modal-btn {
+      padding: 10px 15px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background 0.3s;
+    }
+
+    .buy-btn {
+      background: #4CAF50;
+      color: white;
+    }
+
+    .print-btn {
+      background: #FF9800;
+      color: white;
+    }
+
+    .whatsapp-btn-modal {
+      background: #25D366;
+      color: white;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .close-btn {
+      background: #f44336;
+      color: white;
+    }
+
+    .email-input {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      margin-bottom: 15px;
+    }
+
+    /* Modal de pago Bolt */
+    .bolt-payment-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.7);
+      z-index: 1100;
+      overflow-y: auto;
+    }
+
+    .bolt-payment-content {
+      background: white;
+      margin: 10% auto;
+      padding: 25px;
+      border-radius: 10px;
+      width: 90%;
+      max-width: 500px;
+      position: relative;
+    }
+
+    .bolt-payment-close {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      font-size: 24px;
+      cursor: pointer;
+      color: #555;
+    }
+
+    .bolt-input {
+      width: 100%;
+      padding: 12px;
+      margin: 8px 0 20px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      box-sizing: border-box;
+    }
+
+    .bolt-submit-btn {
+      background: #4CAF50;
+      color: white;
+      border: none;
+      padding: 15px 30px;
+      border-radius: 50px;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 1.1rem;
+      width: 100%;
+      transition: background 0.3s;
+    }
+
+    .bolt-submit-btn:hover {
+      background: #45a049;
+    }
+
+    /* Animación de pago exitoso */
+    .payment-success {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.8);
+      z-index: 1200;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .success-animation {
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      text-align: center;
+      animation: pulse 2s infinite;
+    }
+
+    .success-animation h2 {
+      color: #4CAF50;
+      margin-bottom: 15px;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+
+    /* Keyframes de animación */
+    @keyframes dropDown{0%{transform:translateY(-100px);opacity:0;}100%{transform:translateY(0);opacity:1;}}
+    @keyframes slideInLeft{0%{transform:translateX(-100px);opacity:0;}100%{transform:translateX(0);opacity:1;}}
+    @keyframes slideInRight{0%{transform:translateX(100px);opacity:0;}100%{transform:translateX(0);opacity:1;}}
+    @keyframes fadeIn{0%{opacity:0;}100%{opacity:1;}}
+    @keyframes fadeInUp{0%{opacity:0;transform:translateY(20px);}100%{opacity:1;transform:translateY(0);}}
+    @keyframes moveVacuum{
+      0%{transform:translateX(-150px) rotate(-10deg);opacity:0;}
+      50%{transform:translateX(0) rotate(5deg);opacity:1;}
+      100%{transform:translateX(150px) rotate(-5deg);opacity:0;}
+    }
+
+    /* Imagen de aspiradora */
+    .vacuum{
+      width: 100px;
+      height: 100px;
+      background-image: url('imagenes/producto_cuadrada_51010.jpeg');
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+      margin: 20px auto;
+    }
+
+    /* Controles del slider */
+    .hero-controls{position:absolute;top:50%;transform:translateY(-50%);width:100%;display:flex;justify-content:space-between;padding:0 2rem;z-index:10;pointer-events:none;}
+    .control-btn{pointer-events:all;background:rgba(0,0,0,.5);color:#fff;border:none;font-size:2rem;line-height:1;width:50px;height:50px;border-radius:50%;cursor:pointer;transition:background .3s;}
+    .control-btn:hover{background:rgba(0,0,0,.8);}
+
+    /* Botón para actualizar fondos */
+    .hero-bg-btn{position:absolute;top:20px;right:20px;background:rgba(0,0,0,.7);color:#fff;border:none;padding:8px 15px;border-radius:5px;cursor:pointer;z-index:10;}
+
+    /* ===== ESTILOS PARA BOTONES CTA ===== */
+    .cta-button {
+        display: inline-block;
+        background-color: rgba(255, 255, 255, 0.15);
+        color: white;
+        padding: 0.8rem 2rem;
+        border: 2px solid rgba(255, 255, 255, 0.8);
+        border-radius: 50px;
+        text-decoration: none;
+        font-size: 1.1rem;
+        font-weight: bold;
+        transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease;
+        text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+        margin-top: 1rem;
+    }
+    .cta-button:hover, .cta-button:focus {
+        background-color: rgba(255, 255, 255, 0.9);
+        color: #333;
+        transform: translateY(-3px);
+        text-shadow: none;
+    }
+
+    /* ===== SECCIONES DE CONTENIDO ===== */
+    .section-padding {
+        padding-top: 3rem;
+        padding-bottom: 3rem;
+    }
+    .text-center {
+        text-align: center;
+    }
+    .bg-white {
+        background-color: #fff;
+    }
+    .section-title {
+        font-size: 1.875rem;
+        font-weight: 700;
+        color: #2d3748;
+        margin-bottom: 1.5rem;
+    }
+     .section-subtitle {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: #2d3748;
+        margin-bottom: 1rem;
+    }
+    .section-text {
+        font-size: 1.125rem;
+        color: #4a5568;
+        max-width: 48rem;
+        margin-left: auto;
+        margin-right: auto;
+        margin-bottom: 2rem;
+    }
+
+    /* Layout para imágenes rectangulares en todas las secciones */
+    .rectangular-images-grid {
+        display: grid;
+        grid-template-columns: repeat(1, 1fr);
+        gap: 1.5rem;
+        margin-top: 2rem;
+    }
+    .rectangular-images-grid img {
+      width: 100%;
+      height: auto;
+      border-radius: 0.5rem;
+      box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
+      cursor: pointer;
+      transition: transform 0.3s ease;
+    }
+    
+    .rectangular-images-grid img:hover {
+      transform: scale(1.02);
+    }
+
+    /* ===== SECCIONES CON FONDO DE IMAGEN ===== */
+    .service-background-section {
+        position: relative;
+        padding: 5rem 1rem;
+        background-size: cover;
+        background-position: center;
+        color: #fff;
+        text-align: center;
+        overflow: hidden;
+        min-height: 70vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    /* Efecto de zoom para el fondo */
+    .service-background-section {
+        animation: backgroundZoom 20s ease-in-out infinite;
+    }
+    
+    @keyframes backgroundZoom {
+        0% { background-size: 100% auto; }
+        50% { background-size: 110% auto; }
+        100% { background-size: 100% auto; }
+    }
+    
+    /* Overlay oscuro para mejorar legibilidad */
+    .service-background-section::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(0, 0, 0, 0.5); /* Fondo oscuro semi-transparente */
+        z-index: 1;
+    }
+    
+    /* Asegurar que el contenido esté por encima del fondo */
+    .service-background-section .container {
+        position: relative;
+        z-index: 2;
+    }
+
+    /* Galería */
+    .gallery-grid {
+        display: grid;
+        grid-template-columns: repeat(1, 1fr);
+        gap: 1.5rem;
+    }
+    .gallery-grid img {
+      width: 100%;
+      height: auto;
+      object-fit: cover;
+      aspect-ratio: 3 / 2;
+      border-radius: 0.5rem;
+      box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
+      transition: box-shadow 0.3s ease, transform 0.3s ease;
+      cursor: pointer;
+    }
+    .gallery-grid img:hover {
+      box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04);
+      transform: scale(1.02);
+    }
+
+    /* Formulario de Contacto MEJORADO */
+    #contact {
+        padding-top: 3rem;
+        padding-bottom: 3rem;
+        background-color: #f7fafc;
+        position: relative;
+    }
+     #contact::before {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 300px;
+        height: 300px;
+        background-image: url('imagenes/Logo Be Rabbit FInal.png');
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: contain;
+        opacity: 0.05;
+        transform: translate(-50%, -50%);
+        z-index: 0;
+    }
+
+    #contact > .container {
+         max-width: 48rem;
+         position: relative;
+         z-index: 1;
+    }
+    #contact form {
+        background-color: #fff;
+        padding: 2rem;
+        border-radius: 0.5rem;
+        box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
+        text-align: left;
+    }
+    #contact label {
+        display: block;
+        color: #4a5568;
+        font-size: 0.875rem;
+        font-weight: bold;
+        margin-bottom: 0.5rem;
+    }
+    #contact input[type="text"],
+    #contact input[type="email"],
+    #contact input[type="tel"],
+    #contact textarea {
+        box-shadow: 0 1px 2px 0 rgba(0,0,0,0.5);
+        appearance: none;
+        border: 1px solid #e2e8f0;
+        border-radius: 0.375rem;
+        width: 100%;
+        padding: 0.75rem 1rem;
+        color: #4a5568;
+        line-height: 1.25;
+        margin-bottom: 1.25rem;
+    }
+    #contact input[type="text"]:focus,
+    #contact input[type="email"]:focus,
+    #contact input[type="tel"]:focus,
+    #contact textarea:focus {
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(59,130,246,0.5);
+        border-color: transparent;
+    }
+    #contact textarea {
+        min-height: 100px;
+    }
+    
+    .whatsapp-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #25D366;
+        color: white;
+        font-weight: bold;
+        padding: 0.75rem 1.5rem;
+        border-radius: 9999px;
+        border: none;
+        cursor: pointer;
+        text-decoration: none;
+        transition: background-color 0.3s ease, transform 0.3s ease;
+        width: 100%;
+        max-width: 300px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    .whatsapp-button svg {
+        width: 1.5rem;
+        height: 1.5rem;
+        margin-right: 0.5rem;
+    }
+    .whatsapp-button:hover {
+        background-color: #1DAE54;
+        transform: scale(1.05);
+    }
+
+    .contact-submit-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #2196F3;
+        color: white;
+        font-weight: bold;
+        padding: 0.75rem 1.5rem;
+        border-radius: 9999px;
+        border: none;
+        cursor: pointer;
+        text-decoration: none;
+        transition: background-color 0.3s ease, transform 0.3s ease;
+        width: 100%;
+        max-width: 300px;
+        margin-left: auto;
+        margin-right: auto;
+        margin-top: 10px;
+    }
+    .contact-submit-btn:hover {
+        background-color: #1976D2;
+        transform: scale(1.05);
+    }
+
+    .social-media-icons {
+        text-align: center;
+        margin-top: 1.5rem;
+    }
+    .social-media-icons a {
+        display: inline-block;
+        margin: 0 0.75rem;
+        text-decoration: none;
+    }
+    .social-media-icons svg {
+        width: 2rem;
+        height: 2rem;
+        fill: #4a5568;
+        transition: fill 0.3s ease, transform 0.3s ease;
+    }
+    .social-media-icons a:hover svg {
+        fill: #2b6cb0;
+        transform: scale(1.1);
+    }
+    
+    .form-field-margin {
+        margin-bottom: 1.25rem;
+    }
+    .form-textarea-margin {
+        margin-bottom: 1.5rem;
+    }
+
+    /* Footer */
+    footer {
+        background: #2d3748;
+        color: #fff;
+        text-align: center;
+        padding: 2rem 0;
+    }
+    footer p {
+        font-size: 0.875rem;
+    }
+    footer .footer-subtext {
+        font-size: 0.75rem;
+        margin-top: 0.5rem;
+    }
+
+    /* Estilos para botones de imagen */
+    .image-container {
+        position: relative;
+        display: inline-block;
+    }
+    
+    .image-btn {
+        position: absolute;
+        bottom: 10px;
+        right: 10px;
+        background-color: rgba(0,0,0,0.7);
+        color: white;
+        border: none;
+        padding: 5px 10px;
+        border-radius: 3px;
+        cursor: pointer;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        z-index: 10;
+    }
+    
+    .image-container:hover .image-btn {
+        opacity: 1;
+    }
+    
+    .logo-editor {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        margin-bottom: 20px;
+    }
+    
+    .logo-preview {
+        max-width: 150px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        padding: 5px;
+    }
+    
+    /* Modal de imagen */
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0,0,0,0.7);
+    }
+    
+    .modal-content {
+        background-color: #fefefe;
+        margin: 10% auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 80%;
+        max-width: 600px;
+        border-radius: 10px;
+        position: relative;
+    }
+    
+    .close {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+    
+    .close:hover {
+        color: black;
+    }
+    
+    .image-upload-container {
+        margin: 20px 0;
+    }
+    
+    .image-preview {
+        max-width: 100%;
+        max-height: 300px;
+        margin-top: 15px;
+        display: none;
+    }
+    
+    /* Estilos para la versión pública */
+    .public-version .image-btn,
+    .public-version .action-buttons,
+    .public-version .hero-bg-btn,
+    .public-version #update-logo-btn {
+        display: none;
+    }
+
+    /* ===== MODAL PARA IMÁGENES AMPLIADAS ===== */
+    .image-zoom-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.95);
+      z-index: 2000;
+      overflow: hidden;
+    }
+    
+    .image-zoom-content {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      max-width: 90%;
+      max-height: 90%;
+      object-fit: contain;
+    }
+    
+    .image-zoom-caption {
+      position: absolute;
+      bottom: 20px;
+      left: 0;
+      width: 100%;
+      text-align: center;
+      color: white;
+      font-size: 1.2rem;
+      padding: 10px;
+      background-color: rgba(0, 0, 0, 0.7);
+    }
+    
+    .image-zoom-close {
+      position: absolute;
+      top: 20px;
+      right: 30px;
+      color: white;
+      font-size: 40px;
+      font-weight: bold;
+      cursor: pointer;
+      z-index: 2001;
+    }
+    
+    .image-zoom-close:hover {
+      color: #ccc;
+    }
+    
+    .image-zoom-nav {
+      position: absolute;
+      top: 50%;
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      padding: 0 20px;
+      transform: translateY(-50%);
+      z-index: 2001;
+    }
+    
+    .image-zoom-nav button {
+      background: rgba(0, 0, 0, 0.5);
+      color: white;
+      border: none;
+      font-size: 30px;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    
+    .image-zoom-nav button:hover {
+      background: rgba(0, 0, 0, 0.8);
+    }
+
+    /* Estilos Responsivos */
+    @media (min-width: 768px) {
         #logo {
-            height: 5rem;
+            height: 3rem;
         }
 
-        /* Hero Section */
-        #hero {
-            background-image: url('imagenes/hero_background.jpg');
-            background-size: cover;
-            background-position: center center;
-            min-height: 85vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            padding: 2rem;
-            position: relative;
-        }
-        #hero::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: rgba(0, 0, 0, 0.4);
-            z-index: 1;
-        }
-        .hero-content {
-            position: relative;
-            z-index: 2;
-            color: white;
-        }
-        #hero h1 {
-            font-size: 2.8rem;
-            color: rgba(255, 255, 255, 0.95);
-            text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.7);
-            margin-bottom: 1.5rem;
-            font-weight: 700;
-        }
-        .cta-button {
-            display: inline-block;
-            background-color: rgba(255, 255, 255, 0.15);
-            color: white;
-            padding: 0.8rem 2rem;
-            border: 2px solid rgba(255, 255, 255, 0.8);
-            border-radius: 50px;
-            text-decoration: none;
-            font-size: 1.1rem;
-            font-weight: bold;
-            transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease;
-            text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
-        }
-        .cta-button:hover, .cta-button:focus {
-            background-color: rgba(255, 255, 255, 0.9);
-            color: #333;
-            transform: translateY(-3px);
-            text-shadow: none;
-        }
-
-        /* Sección Contenido Secundario y Servicios */
-        .section-padding {
-            padding-top: 3rem;
-            padding-bottom: 3rem;
-        }
-        .text-center {
-            text-align: center;
-        }
-        .bg-white {
-            background-color: #fff;
-        }
-        .section-title {
-            font-size: 1.875rem;
-            font-weight: 700;
-            color: #2d3748;
-            margin-bottom: 1.5rem;
-        }
-         .section-subtitle {
-            font-size: 1.5rem;
-            font-weight: 600;
-            color: #2d3748;
-            margin-bottom: 1rem;
-        }
-        .section-text {
-            font-size: 1.125rem;
-            color: #4a5568;
-            max-width: 48rem;
-            margin-left: auto;
-            margin-right: auto;
-            margin-bottom: 2rem;
-        }
-
-        /* Layout para imágenes rectangulares en "Explora Nuestros Servicios" */
         .rectangular-images-grid {
-            display: grid;
-            grid-template-columns: repeat(1, 1fr);
-            gap: 1.5rem;
-            margin-top: 2rem;
+            grid-template-columns: repeat(2, 1fr);
         }
-        .rectangular-images-grid img {
-            width: 100%;
-            height: auto;
-            border-radius: 0.5rem;
-            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
-        }
-
-        /* Layout para servicios con imagen de fondo y cuadrícula */
-        .service-background-section {
-            position: relative;
-            padding: 4rem 1rem;
-            background-size: cover;
-            background-position: center;
-            color: #1a202c;
-            text-align: center;
-        }
-        .service-background-section::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: rgba(255, 255, 255, 0.0); /* Opacidad reducida */
-            z-index: 1;
-        }
-        .service-background-content {
-            position: relative;
-            z-index: 2;
-            max-width: 42rem;
-            margin-left: auto;
-            margin-right: auto;
-        }
-        .service-background-content h3 {
-            font-size: 2rem;
-            font-weight: 700;
-            margin-bottom: 1rem;
-        }
-        .service-background-content p {
-            font-size: 1.1rem;
-            margin-bottom: 2rem;
-        }
-
-        .square-images-grid {
-            display: grid;
-            grid-template-columns: repeat(1, 1fr);
-            gap: 1.5rem;
-            margin-top: 2rem;
-            padding: 1rem;
-        }
-        .square-images-grid img {
-            width: 100%;
-            height: auto;
-            aspect-ratio: 1 / 1;
-            object-fit: cover;
-            border-radius: 0.5rem;
-            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
-        }
-
-        /* Galería */
         .gallery-grid {
-            display: grid;
-            grid-template-columns: repeat(1, 1fr);
-            gap: 1.5rem;
+            grid-template-columns: repeat(2, 1fr);
         }
-        .gallery-grid img {
-            width: 100%;
-            height: auto;
-            object-fit: cover;
-            aspect-ratio: 3 / 2;
-            border-radius: 0.5rem;
-            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
-            transition: box-shadow 0.3s ease;
-        }
-        .gallery-grid img:hover {
-            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04);
-        }
+    }
 
-        /* Formulario de Contacto */
-        #contact {
-            padding-top: 3rem;
-            padding-bottom: 3rem;
-            background-color: #f7fafc;
-            position: relative;
+    @media (min-width: 1024px) {
+         .rectangular-images-grid {
+            grid-template-columns: repeat(4, 1fr);
         }
-         #contact::before {
-            content: "";
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 300px;
-            height: 300px;
-            background-image: url('imagenes/Logo Be Rabbit FInal.png');
-            background-repeat: no-repeat;
-            background-position: center;
-            background-size: contain;
-            opacity: 0.05;
-            transform: translate(-50%, -50%);
-            z-index: 0;
+        .gallery-grid {
+            grid-template-columns: repeat(3, 1fr);
         }
+    }
 
-        #contact > .container {
-             max-width: 48rem;
-             position: relative;
-             z-index: 1;
+    @media (max-width: 768px) {
+        #hero { min-height: 70vh; }
+        #hero h1 { font-size: 2.2rem; }
+        .cta-button { padding: 0.7rem 1.5rem; font-size: 1rem; }
+        .section-title { font-size: 1.5rem; }
+        .section-text { font-size: 1rem; }
+        .hero-bg-btn {
+            top: 10px;
+            right: 10px;
+            padding: 5px 10px;
+            font-size: 0.8rem;
         }
-        #contact form {
-            background-color: #fff;
-            padding: 2rem;
-            border-radius: 0.5rem;
-            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
-            text-align: left;
+        .product-modal-body {
+            flex-direction: column;
         }
-        #contact label {
-            display: block;
-            color: #4a5568;
-            font-size: 0.875rem;
-            font-weight: bold;
-            margin-bottom: 0.5rem;
+        .slide-5 .product-card {
+            width: 220px;
         }
-        #contact input[type="text"],
-        #contact input[type="email"],
-        #contact textarea {
-            box-shadow: 0 1px 2px 0 rgba(0,0,0,0.5);
-            appearance: none;
-            border: 1px solid #e2e8f0;
-            border-radius: 0.375rem;
-            width: 100%;
-            padding: 0.75rem 1rem;
-            color: #4a5568;
-            line-height: 1.25;
-            margin-bottom: 1.25rem;
+        .image-zoom-nav {
+          padding: 0 10px;
         }
-        #contact input[type="text"]:focus,
-        #contact input[type="email"]:focus,
-        #contact textarea:focus {
-            outline: none;
-            box-shadow: 0 0 0 3px rgba(59,130,246,0.5);
-            border-color: transparent;
+        .image-zoom-nav button {
+          width: 40px;
+          height: 40px;
+          font-size: 20px;
         }
-        #contact textarea {
-            min-height: 100px;
+        .service-background-section {
+            padding: 3rem 1rem;
+            min-height: 60vh;
         }
-        
+    }
+
+    @media (max-width: 480px) {
+        .container { width: 95%; }
+        #hero h1 { font-size: 1.8rem; }
+        .cta-button { padding: 0.6rem 1.2rem; font-size: 0.9rem; }
         .whatsapp-button {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            background-color: #25D366;
-            color: white;
-            font-weight: bold;
-            padding: 0.75rem 1.5rem;
-            border-radius: 9999px;
-            border: none;
-            cursor: pointer;
-            text-decoration: none;
-            transition: background-color 0.3s ease, transform 0.3s ease;
-            width: 100%;
-            max-width: 300px;
-            margin-left: auto;
-            margin-right: auto;
+            padding: 0.6rem 1rem;
+            font-size: 0.9rem;
         }
         .whatsapp-button svg {
-            width: 1.5rem;
-            height: 1.5rem;
-            margin-right: 0.5rem;
-        }
-        .whatsapp-button:hover {
-            background-color: #1DAE54;
-            transform: scale(1.05);
-        }
-
-        .social-media-icons {
-            text-align: center;
-            margin-top: 1.5rem;
-        }
-        .social-media-icons a {
-            display: inline-block;
-            margin: 0 0.75rem;
-            text-decoration: none;
+            width: 1.25rem;
+            height: 1.25rem;
         }
         .social-media-icons svg {
-            width: 2rem;
-            height: 2rem;
-            fill: #4a5568;
-            transition: fill 0.3s ease, transform 0.3s ease;
+            width: 1.75rem;
+            height: 1.75rem;
         }
-        .social-media-icons a:hover svg {
-            fill: #2b6cb0;
-            transform: scale(1.1);
+        #contact::before {
+            width: 200px;
+            height: 200px;
         }
-        
-        .form-field-margin {
-            margin-bottom: 1.25rem;
-        }
-        .form-textarea-margin {
-            margin-bottom: 1.5rem;
-        }
-
-        /* Footer */
-        footer {
-            background: #2d3748;
-            color: #fff;
-            text-align: center;
-            padding: 2rem 0;
-        }
-        footer p {
-            font-size: 0.875rem;
-        }
-        footer .footer-subtext {
-            font-size: 0.75rem;
-            margin-top: 0.5rem;
-        }
-
-        /* Botones de acción */
         .action-buttons {
-            display: flex;
-            gap: 10px;
-            margin: 20px 0;
-            justify-content: center;
-        }
-        
-        .action-btn {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: all 0.3s ease;
-        }
-        
-        .publish-btn {
-            background-color: #4CAF50;
-            color: white;
-        }
-        
-        .reset-btn {
-            background-color: #f44336;
-            color: white;
-        }
-        
-        .action-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-        }
-
-        /* Estilos para botones de imagen */
-        .image-container {
-            position: relative;
-            display: inline-block;
-        }
-        
-        .image-btn {
-            position: absolute;
-            bottom: 10px;
-            right: 10px;
-            background-color: rgba(0,0,0,0.7);
-            color: white;
-            border: none;
-            padding: 5px 10px;
-            border-radius: 3px;
-            cursor: pointer;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            z-index: 10;
-        }
-        
-        .image-container:hover .image-btn {
-            opacity: 1;
-        }
-        
-        .logo-editor {
-            display: flex;
+            flex-direction: column;
             align-items: center;
-            gap: 15px;
-            margin-bottom: 20px;
         }
-        
-        .logo-preview {
-            max-width: 150px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            padding: 5px;
+        .modal-buttons {
+            flex-direction: column;
         }
-        
-        /* Modal de imagen */
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0,0,0,0.7);
+        .slide-5 .product-card {
+            width: 200px;
         }
-        
-        .modal-content {
-            background-color: #fefefe;
-            margin: 10% auto;
-            padding: 20px;
-            border: 1px solid #888;
-            width: 80%;
-            max-width: 600px;
-            border-radius: 10px;
-            position: relative;
+        .service-background-section {
+            padding: 2rem 1rem;
+            min-height: 50vh;
         }
-        
-        .close {
-            color: #aaa;
-            float: right;
-            font-size: 28px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-        
-        .close:hover {
-            color: black;
-        }
-        
-        .image-upload-container {
-            margin: 20px 0;
-        }
-        
-        .image-preview {
-            max-width: 100%;
-            max-height: 300px;
-            margin-top: 15px;
-            display: none;
-        }
-        
-        /* Botón para fondo hero */
-        .hero-bg-btn {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            background-color: rgba(0,0,0,0.7);
-            color: white;
-            border: none;
-            padding: 8px 15px;
-            border-radius: 5px;
-            cursor: pointer;
-            z-index: 10;
-        }
-        
-        /* Estilos para la versión pública */
-        .public-version .image-btn,
-        .public-version .action-buttons,
-        .public-version .hero-bg-btn,
-        .public-version #update-logo-btn {
-            display: none;
-        }
-
-        /* Estilos Responsivos */
-        @media (min-width: 768px) {
-            #logo {
-                height: 3rem;
-            }
-
-            .rectangular-images-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-             .square-images-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-            .gallery-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-
-        @media (min-width: 1024px) {
-             .rectangular-images-grid {
-                grid-template-columns: repeat(4, 1fr);
-            }
-            .square-images-grid {
-                grid-template-columns: repeat(4, 1fr);
-            }
-            .gallery-grid {
-                grid-template-columns: repeat(3, 1fr);
-            }
-        }
-
-        @media (max-width: 768px) {
-            #hero { min-height: 70vh; }
-            #hero h1 { font-size: 2.2rem; }
-            .cta-button { padding: 0.7rem 1.5rem; font-size: 1rem; }
-            .section-title { font-size: 1.5rem; }
-            .section-text { font-size: 1rem; }
-            .hero-bg-btn {
-                top: 10px;
-                right: 10px;
-                padding: 5px 10px;
-                font-size: 0.8rem;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .container { width: 95%; }
-            #hero h1 { font-size: 1.8rem; }
-            .cta-button { padding: 0.6rem 1.2rem; font-size: 0.9rem; }
-            .whatsapp-button {
-                padding: 0.6rem 1rem;
-                font-size: 0.9rem;
-            }
-            .whatsapp-button svg {
-                width: 1.25rem;
-                height: 1.25rem;
-            }
-            .social-media-icons svg {
-                width: 1.75rem;
-                height: 1.75rem;
-            }
-            #contact::before {
-                width: 200px;
-                height: 200px;
-            }
-            .action-buttons {
-                flex-direction: column;
-                align-items: center;
-            }
-        }
-    </style>
+    }
+  </style>
 </head>
 <body>
 
-    <header>
-        <div class="container header-container">
-            <a href="#hero" class="logo-editor-container">
-                <img src="imagenes/Logo Be Rabbit FInal.png" alt="SnapVISUAL Logo" id="logo">
-            </a>
+<header>
+  <div class="container" style="display:flex;justify-content:space-between;align-items:center;">
+    <a href="#hero">
+      <img src="imagenes/Logo Be Rabbit FInal.png" alt="Logo" id="logo">
+    </a>
+    <div class="action-buttons">
+      <button class="action-btn reset-btn" id="reset-btn">Borrar listas</button>
+      <button class="action-btn publish-btn" id="publish-btn">Publicar</button>
+    </div>
+  </div>
+</header>
 
-            <div class="action-buttons">
-                <button class="action-btn reset-btn" id="reset-btn">Borrar listas</button>
-                <button class="action-btn publish-btn" id="publish-btn">Publicar</button>
-            </div>
-        </div>
-    </header>
+<main>
+  <section id="hero">
+    <button class="hero-bg-btn" id="update-hero-bg">Actualizar Fondo</button>
 
-    <main>
-        <section id="hero">
-            <button class="hero-bg-btn" id="update-hero-bg">Actualizar Fondo</button>
-            <div class="hero-content">
-                <h1>Campaña Fotográfica</h1>
-                <a href="#contact" class="cta-button">Contáctanos</a>
-            </div>
-        </section>
-
-        <section id="secondary-content" class="section-padding text-center bg-white">
-            <div class="container">
-                <h2 class="section-title">Explora Nuestros Servicios</h2>
-                <p class="section-text">Descubre cómo podemos ayudarte a capturar momentos inolvidables y crear imágenes impactantes.</p>
-                <div class="rectangular-images-grid">
-                    <div class="image-container">
-                        <img src="imagenes/rectangular_1.jpg" alt="Servicio destacado 1" class="editable-img" data-key="rect1">
-                        <button class="image-btn update-img-btn" data-target="rect1">Actualizar</button>
-                    </div>
-                    <div class="image-container">
-                        <img src="imagenes/rectangular_2.jpg" alt="Servicio destacado 2" class="editable-img" data-key="rect2">
-                        <button class="image-btn update-img-btn" data-target="rect2">Actualizar</button>
-                    </div>
-                    <div class="image-container">
-                        <img src="imagenes/rectangular_3.jpg" alt="Servicio destacado 3" class="editable-img" data-key="rect3">
-                        <button class="image-btn update-img-btn" data-target="rect3">Actualizar</button>
-                    </div>
-                    <div class="image-container">
-                        <img src="imagenes/rectangular_4.jpg" alt="Servicio destacado 4" class="editable-img" data-key="rect4">
-                        <button class="image-btn update-img-btn" data-target="rect4">Actualizar</button>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section id="service-events" class="service-background-section" style="background-image: url('imagenes/evento_fondo.jpg');">
-            <div class="service-background-content">
-                <h3 class="section-subtitle">Fotografía de Eventos</h3>
-                <p>Capturamos la esencia y los momentos más importantes de tus eventos sociales, corporativos o celebraciones especiales, con un enfoque profesional y creativo.</p>
-            </div>
-             <div class="container"> <div class="square-images-grid">
-                    <div class="image-container">
-                        <img src="imagenes/evento_cuadrada_1.jpg" alt="Evento social" class="editable-img" data-key="event1">
-                        <button class="image-btn update-img-btn" data-target="event1">Actualizar</button>
-                    </div>
-                    <div class="image-container">
-                        <img src="imagenes/evento_cuadrada_2.jpg" alt="Evento corporativo" class="editable-img" data-key="event2">
-                        <button class="image-btn update-img-btn" data-target="event2">Actualizar</button>
-                    </div>
-                    <div class="image-container">
-                        <img src="imagenes/evento_cuadrada_3.jpg" alt="Celebración especial" class="editable-img" data-key="event3">
-                        <button class="image-btn update-img-btn" data-target="event3">Actualizar</button>
-                    </div>
-                    <div class="image-container">
-                        <img src="imagenes/evento_cuadrada_4.jpg" alt="Detalle de evento" class="editable-img" data-key="event4">
-                        <button class="image-btn update-img-btn" data-target="event4">Actualizar</button>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section id="service-portrait" class="service-background-section bg-white" style="background-image: url('imagenes/retrato_fondo.jpg');">
-             <div class="service-background-content">
-                <h3 class="section-subtitle">Sesiones de Retrato</h3>
-                <p>Creamos retratos artísticos y personalizados que cuentan tu historia, resaltando tu personalidad y estilo único, ya sea individual, familiar o profesional.</p>
-            </div>
-            <div class="container">
-                <div class="square-images-grid">
-                    <div class="image-container">
-                        <img src="imagenes/retrato_cuadrada_1.jpg" alt="Retrato individual" class="editable-img" data-key="retrato1">
-                        <button class="image-btn update-img-btn" data-target="retrato1">Actualizar</button>
-                    </div>
-                    <div class="image-container">
-                        <img src="imagenes/retrato_cuadrada_2.jpg" alt="Retrato familiar" class="editable-img" data-key="retrato2">
-                        <button class="image-btn update-img-btn" data-target="retrato2">Actualizar</button>
-                    </div>
-                    <div class="image-container">
-                        <img src="imagenes/retrato_cuadrada_3.jpg" alt="Retrato profesional" class="editable-img" data-key="retrato3">
-                        <button class="image-btn update-img-btn" data-target="retrato3">Actualizar</button>
-                    </div>
-                    <div class="image-container">
-                        <img src="imagenes/retrato_cuadrada_4.jpg" alt="Retrato artístico" class="editable-img" data-key="retrato4">
-                        <button class="image-btn update-img-btn" data-target="retrato4">Actualizar</button>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section id="service-product" class="service-background-section" style="background-image: url('imagenes/producto_fondo.jpg');">
-            <div class="service-background-content">
-                <h3 class="section-subtitle">Fotografía de Producto</h3>
-                <p>Producimos imágenes de alta calidad que destacan tus productos, perfectas para catálogos, e-commerce y campañas publicitarias, con atención al detalle y la iluminación.</p>
-            </div>
-            <div class="container">
-                <div class="square-images-grid">
-                    <div class="image-container">
-                        <img src="imagenes/producto_cuadrada_1.jpg" alt="Producto para e-commerce" class="editable-img" data-key="product1">
-                        <button class="image-btn update-img-btn" data-target="product1">Actualizar</button>
-                    </div>
-                    <div class="image-container">
-                        <img src="imagenes/producto_cuadrada_2.jpg" alt="Producto en detalle" class="editable-img" data-key="product2">
-                        <button class="image-btn update-img-btn" data-target="product2">Actualizar</button>
-                    </div>
-                    <div class="image-container">
-                        <img src="imagenes/producto_cuadrada_3.jpg" alt="Producto para catálogo" class="editable-img" data-key="product3">
-                        <button class="image-btn update-img-btn" data-target="product3">Actualizar</button>
-                    </div>
-                    <div class="image-container">
-                        <img src="imagenes/producto_cuadrada_4.jpg" alt="Producto publicitario" class="editable-img" data-key="product4">
-                        <button class="image-btn update-img-btn" data-target="product4">Actualizar</button>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section id="gallery" class="section-padding bg-white text-center">
-            <div class="container">
-                <h2 class="section-title">Galería</h2>
-                <p class="section-text">Aquí puedes ver una muestra de nuestro trabajo.</p>
-                <div class="gallery-grid">
-                    <div class="image-container">
-                        <img src="imagenes/galeria_1.jpg" alt="Foto de Galería 1" class="editable-img" data-key="gallery1">
-                        <button class="image-btn update-img-btn" data-target="gallery1">Actualizar</button>
-                    </div>
-                    <div class="image-container">
-                        <img src="imagenes/galeria_2.jpg" alt="Foto de Galería 2" class="editable-img" data-key="gallery2">
-                        <button class="image-btn update-img-btn" data-target="gallery2">Actualizar</button>
-                    </div>
-                    <div class="image-container">
-                        <img src="imagenes/galeria_3.jpg" alt="Foto de Galería 3" class="editable-img" data-key="gallery3">
-                        <button class="image-btn update-img-btn" data-target="gallery3">Actualizar</button>
-                    </div>
-                    <div class="image-container">
-                        <img src="imagenes/galeria_4.jpg" alt="Foto de Galería 4" class="editable-img" data-key="gallery4">
-                        <button class="image-btn update-img-btn" data-target="gallery4">Actualizar</button>
-                    </div>
-                    <div class="image-container">
-                        <img src="imagenes/galeria_5.jpg" alt="Foto de Galería 5" class="editable-img" data-key="gallery5">
-                        <button class="image-btn update-img-btn" data-target="gallery5">Actualizar</button>
-                    </div>
-                    <div class="image-container">
-                        <img src="imagenes/galeria_6.jpg" alt="Foto de Galería 6" class="editable-img" data-key="gallery6">
-                        <button class="image-btn update-img-btn" data-target="gallery6">Actualizar</button>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section id="contact" class="text-center">
-            <div class="container">
-                <h2 class="section-title">Contáctanos</h2>
-                <p class="section-text">¿Listo para tu próxima campaña fotográfica o necesitas más información? ¡Escríbenos!</p>
-                
-                <div class="logo-editor">
-                    <img id="contact-logo" src="imagenes/Logo Be Rabbit FInal.png" alt="Logo de contacto" class="logo-preview">
-                    <button class="action-btn" id="update-logo-btn">Actualizar Logo</button>
-                </div>
-                
-                <form action="#" method="POST"> 
-                    <div class="form-field-margin">
-                        <label for="name">Nombre Completo:</label>
-                        <input type="text" id="name" name="name" placeholder="Tu Nombre" required>
-                    </div>
-                    <div class="form-field-margin">
-                        <label for="email">Correo Electrónico:</label>
-                        <input type="email" id="email" name="email" placeholder="tu@email.com" required>
-                    </div>
-                    <div class="form-textarea-margin">
-                        <label for="message">Mensaje:</label>
-                        <textarea id="message" name="message" rows="5" placeholder="Cuéntanos sobre tu proyecto..." required></textarea>
-                    </div>
-                    <div class="text-center">
-                        <a href="https://wa.me/573127439018" target="_blank" class="whatsapp-button" aria-label="Contactar por WhatsApp">
-                            <svg viewBox="0 0 32 32"><path d=" M19.11 17.205c-.372 0-1.088 1.39-1.518 1.39a.63.63 0 0 1-.315-.1c-.802-.402-1.504-.817-2.163-1.447-.545-.516-1.146-1.29-1.46-1.963a.426.426 0 0 1-.073-.215c0-.33.99-.945.99-1.49 0-.143-.73-2.09-.832-2.335-.143-.372-.214-.487-.6-.487-.187 0-.36-.044-.53-.044-.302 0-.53.115-.746.315-.688.645-1.032 1.318-1.06 2.264v.114c-.015.99.472 1.977 1.017 2.78 1.23 1.82 2.506 3.41 4.554 4.34.616.287 2.035.888 2.722.888.817 0 2.15-.515 2.438-1.508.287-.99.287-1.84.13-2.09-.128-.25-.3-.36-.6-.36m-6.508 6.71a9.26 9.26 0 0 0 4.767 4.767c.88.36 1.88.47 2.64.36 2.72-.402 3.78-2.18 3.78-4.94v-5.1a2.09 2.09 0 0 0-1.032-1.84A10.22 10.22 0 0 0 16.315 4.1a1.73 1.73 0 0 0-1.46.044c-.99.444-1.638 1.39-1.753 2.473-.073.615.044 1.23.315 1.752L10.56 12.2c-.044.13-.1.214-.1.33s0 .215.044.33l2.264 3.045c.044.115.1.214.1.33s0 .214-.044.33l-2.474 3.78c-.044.13-.073.24-.073.36 0 .24.1.444.214.616.13.187.287.33.472.444a1.37 1.37 0 0 0 .615.073c.215 0 .4-.044.56-.114L15.8 21.19a.425.425 0 0 1 .36.044l.13.072c.517.24.96.516 1.33.817.39.287.73.545.99.746.24.214.36.472.36.746s-.1.53-.315.746zM16 2C7.972 2 2 7.972 2 16s5.972 14 14 14 14-5.972 14-14S24.028 2 16 2z" fill="white"></path></svg>
-                            Contactar por WhatsApp
-                        </a>
-                    </div>
-                    <div class="social-media-icons">
-                        <a href="#" target="_blank" aria-label="Facebook de SnapVISUAL"> <svg viewBox="0 0 24 24"><path d="M12 2.04C6.5 2.04 2 6.53 2 12.06c0 5.52 4.5 10.02 10 10.02s10-4.5 10-10.02C22 6.53 17.5 2.04 12 2.04zM13.6 19.14v-5.95h2.02l.3-2.34h-2.32V9.45c0-.68.19-1.14 1.16-1.14h1.24V6.12c-.21-.03-.95-.09-1.8-.09-1.83 0-3.08.98-3.08 3.16v1.72H9.38v2.34h1.84v5.95h2.38z"/></svg>
-                        </a>
-                        <a href="#" target="_blank" aria-label="Instagram de SnapVISUAL"> <svg viewBox="0 0 24 24"><path d="M12 2c-2.72 0-3.05.01-4.12.06-1.06.05-1.79.23-2.42.47-.65.25-1.23.58-1.77 1.14S2.78 5.28 2.53 5.93c-.24.63-.42 1.36-.47 2.42C2.01 9.43 2 9.76 2 12s.01 2.57.06 3.64c.05 1.06.23 1.79.47 2.42.25.65.58 1.23 1.14 1.77.54.54 1.12.87 1.77 1.14.63.24 1.36.42 2.42.47 1.07.05 1.4.06 4.12.06s3.05-.01 4.12-.06c1.06-.05 1.79-.23 2.42-.47.65-.25 1.23-.58 1.77-1.14.54-.54.87-1.12 1.14-1.77.24-.63.42-1.36.47-2.42.05-1.07.06-1.4.06-4.12s-.01-2.57-.06-3.64c-.05-1.06-.23-1.79-.47-2.42-.25-.65-.58-1.23-1.14-1.77-.54-.54-1.12-.87-1.77-1.14-.63-.24-1.36-.42-2.42-.47C15.05 2.01 14.72 2 12 2zm0 1.8c2.65 0 2.95.01 4 .06 1.03.05 1.5.2 1.82.33.4.16.7.35.98.63.28.28.47.58.63.98.13.32.28.79.33 1.82.04 1.05.05 1.35.05 4s-.01 2.95-.06 4c-.05 1.03-.2 1.5-.33 1.82-.16.4-.35.7-.63.98-.28.28-.58.47-.98.63-.32.13-.79.28-1.82.33-1.05.04-1.35.05-4 .05s-2.95-.01-4-.06c-1.03-.05-1.5-.2-1.82-.33-.4-.16-.7-.35-.98.63-.28-.28-.47-.58-.63-.98-.13-.32-.28-.79-.33-1.82C4.01 14.95 4 14.65 4 12s.01-2.95.06-4c.05-1.03.2-1.5.33-1.82.16-.4.35-.7.63-.98.28-.28.58.47.98-.63.32-.13.79-.28 1.82-.33C9.05 3.81 9.35 3.8 12 3.8zm0 7.35c-2.62 0-4.75 2.13-4.75 4.75S9.38 16.65 12 16.65s4.75-2.13 4.75-4.75S14.62 7.15 12 7.15zm0 7.7c-1.63 0-2.95-1.32-2.95-2.95s1.32-2.95 2.95-2.95 2.95 1.32 2.95 2.95-1.32 2.95-2.95 2.95zm4.95-8.1c-.61 0-1.1.49-1.1 1.1s.49 1.1 1.1 1.1 1.1-.49 1.1-1.1-.49-1.1-1.1-1.1z"/></svg>
-                        </a>
-                        <a href="#" target="_blank" aria-label="TikTok de SnapVISUAL"> <svg viewBox="0 0 24 24"><path d=" M19.11 17.205c-.372 0-1.088 1.39-1.518 1.39a.63.63 0 0 1-.315-.1c-.802-.402-1.504-.817-2.163-1.447-.545-.516-1.146-1.29-1.46-1.963a.426.426 0 0 1-.073-.215c0-.33.99-.945.99-1.49 0-.143-.73-2.09-.832-2.335-.143-.372-.214-.487-.6-.487-.187 0-.36-.044-.53-.044-.302 0-.53.115-.746.315-.688.645-1.032 1.318-1.06 2.264v.114c-.015.99.472 1.977 1.017 2.78 1.23 1.82 2.506 3.41 4.554 4.34.616.287 2.035.888 2.722.888.817 0 2.15-.515 2.438-1.508.287-.99.287-1.84.13-2.09-.128-.25-.3-.36-.6-.36m-6.508 6.71a9.26 9.26 0 0 0 4.767 4.767c.88.36 1.88.47 2.64.36 2.72-.402 3.78-2.18 3.78-4.94v-5.1a2.09 2.09 0 0 0-1.032-1.84A10.22 10.22 0 0 0 16.315 4.1a1.73 1.73 0 0 0-1.46.044c-.99.444-1.638 1.39-1.753 2.473-.073.615.044 1.23.315 1.752L10.56 12.2c-.044.13-.1.214-.1.33s0 .215.044.33l2.264 3.045c.044.115.1.214.1.33s0 .214-.044.33l-2.474 3.78c-.044.13-.073.24-.073.36 0 .24.1.444.214.616.13.187.287.33.472.444a1.37 1.37 0 0 0 .615.073c.215 0 .4-.044.56-.114L15.8 21.19a.425.425 0 0 1 .36.044l.13.072c.517.24.96.516 1.33.817.39.287.73.545.99.746.24.214.36.472.36.746s-.1.53-.315.746zM16 2C7.972 2 2 7.972 2 16s5.972 14 14 14 14-5.972 14-14S24.028 2 16 2z" fill="white"></path></svg>
-                        </a>
-                    </div>
-                </form>
-            </div>
-        </section>
-    </main>
-
-    <footer>
-        <div class="container">
-            <p>&copy; 2024 SnapVISUAL. Todos los derechos reservados.</p>
-            <p class="footer-subtext">Diseño web con ❤️</p>
-        </div>
-    </footer>
-
-    <!-- Modal para actualizar imágenes -->
-    <div id="imageModal" class="modal">
-        <div class="modal-content">
-            <span class="close">&times;</span>
-            <h2 id="modalTitle">Actualizar Imagen</h2>
-            <div class="image-upload-container">
-                <input type="file" id="imageUpload" accept="image/*">
-                <img id="imagePreview" class="image-preview" alt="Vista previa de la imagen">
-            </div>
-            <button class="action-btn" id="confirmUpdate">Actualizar Imagen</button>
-        </div>
+    <div class="hero-controls">
+      <button class="control-btn" onclick="moveSlide(-1)">&#10094;</button>
+      <button class="control-btn" onclick="moveSlide(1)">&#10095;</button>
     </div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            // Elementos del DOM
-            const modal = document.getElementById('imageModal');
-            const closeModal = document.querySelector('.close');
-            const imageUpload = document.getElementById('imageUpload');
-            const imagePreview = document.getElementById('imagePreview');
-            const confirmUpdate = document.getElementById('confirmUpdate');
-            const updateLogoBtn = document.getElementById('update-logo-btn');
-            const updateHeroBgBtn = document.getElementById('update-hero-bg');
-            const resetBtn = document.getElementById('reset-btn');
-            const publishBtn = document.getElementById('publish-btn');
-            const logo = document.getElementById('logo');
-            const contactLogo = document.getElementById('contact-logo');
-            const heroSection = document.getElementById('hero');
-            
-            // Variables para seguimiento
-            let currentImageKey = null;
-            let currentImageElement = null;
-            
-            // Cargar imágenes guardadas desde localStorage
-            function loadSavedImages() {
-                // Cargar logo
-                const savedLogo = localStorage.getItem('logoImage');
-                if (savedLogo) {
-                    logo.src = savedLogo;
-                    contactLogo.src = savedLogo;
-                }
-                
-                // Cargar otras imágenes
-                document.querySelectorAll('.editable-img').forEach(img => {
-                    const key = img.getAttribute('data-key');
-                    const savedImage = localStorage.getItem(`image_${key}`);
-                    if (savedImage) {
-                        img.src = savedImage;
-                    }
-                });
-                
-                // Cargar fondo del hero
-                const savedHeroBg = localStorage.getItem('heroBackground');
-                if (savedHeroBg) {
-                    heroSection.style.backgroundImage = `url(${savedHeroBg})`;
-                }
-            }
-            
-            // Inicializar carga de imágenes guardadas
-            loadSavedImages();
-            
-            // Eventos para botones de actualizar imagen
-            document.querySelectorAll('.update-img-btn').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const targetKey = this.getAttribute('data-target');
-                    openImageModal(targetKey);
-                });
-            });
-            
-            // Evento para actualizar logo
-            updateLogoBtn.addEventListener('click', function() {
-                openImageModal('logo');
-            });
-            
-            // Evento para actualizar fondo hero
-            updateHeroBgBtn.addEventListener('click', function() {
-                openImageModal('hero-bg');
-            });
-            
-            // Abrir modal para actualizar imagen
-            function openImageModal(key) {
-                currentImageKey = key;
-                modal.style.display = 'block';
-                
-                // Establecer título apropiado
-                const modalTitle = document.getElementById('modalTitle');
-                
-                if (key === 'logo') {
-                    modalTitle.textContent = 'Actualizar Logo';
-                } else if (key === 'hero-bg') {
-                    modalTitle.textContent = 'Actualizar Fondo de Hero';
-                } else {
-                    modalTitle.textContent = 'Actualizar Imagen';
-                }
-                
-                // Restablecer vista previa
-                imagePreview.style.display = 'none';
-                imageUpload.value = '';
-            }
-            
-            // Cerrar modal
-            closeModal.addEventListener('click', function() {
-                modal.style.display = 'none';
-            });
-            
-            // Vista previa de imagen seleccionada
-            imageUpload.addEventListener('change', function(e) {
-                const file = e.target.files[0];
-                if (file) {
-                    const reader = new FileReader();
-                    reader.onload = function(event) {
-                        imagePreview.src = event.target.result;
-                        imagePreview.style.display = 'block';
-                    };
-                    reader.readAsDataURL(file);
-                }
-            });
-            
-            // Confirmar actualización de imagen
-            confirmUpdate.addEventListener('click', function() {
-                if (imagePreview.style.display === 'block') {
-                    const newImageSrc = imagePreview.src;
-                    
-                    if (currentImageKey === 'logo') {
-                        // Actualizar logo en todas partes
-                        logo.src = newImageSrc;
-                        contactLogo.src = newImageSrc;
-                        localStorage.setItem('logoImage', newImageSrc);
-                    } else if (currentImageKey === 'hero-bg') {
-                        // Actualizar fondo hero
-                        heroSection.style.backgroundImage = `url(${newImageSrc})`;
-                        localStorage.setItem('heroBackground', newImageSrc);
-                    } else {
-                        // Actualizar imágenes específicas
-                        document.querySelectorAll(`.editable-img[data-key="${currentImageKey}"]`).forEach(img => {
-                            img.src = newImageSrc;
-                        });
-                        localStorage.setItem(`image_${currentImageKey}`, newImageSrc);
-                    }
-                    
-                    modal.style.display = 'none';
-                } else {
-                    alert('Por favor, selecciona una imagen primero.');
-                }
-            });
-            
-            // Botón para borrar todas las imágenes
-            resetBtn.addEventListener('click', function() {
-                if (confirm('¿Estás seguro de que deseas borrar todas las imágenes y restaurar las originales?')) {
-                    // Eliminar todas las imágenes guardadas
-                    Object.keys(localStorage).forEach(key => {
-                        if (key.startsWith('image_') || key === 'logoImage' || key === 'heroBackground') {
-                            localStorage.removeItem(key);
-                        }
-                    });
-                    
-                    // Recargar la página para restaurar imágenes originales
-                    location.reload();
-                }
-            });
-            
-            // Botón para publicar
-            publishBtn.addEventListener('click', function() {
-                // Crear objeto con todos los datos necesarios para la versión pública
-                const publishedData = {
-                    logo: localStorage.getItem('logoImage') || 'imagenes/Logo Be Rabbit FInal.png',
-                    heroBg: localStorage.getItem('heroBackground') || 'imagenes/hero_background.jpg',
-                    images: {}
-                };
-                
-                // Recopilar todas las imágenes
-                document.querySelectorAll('.editable-img').forEach(img => {
-                    const key = img.getAttribute('data-key');
-                    publishedData.images[key] = localStorage.getItem(`image_${key}`) || img.src;
-                });
-                
-                // Generar el HTML de la página pública
-                const publicPageContent = createPublicPage(publishedData);
-                
-                // Abrir la versión pública en una nueva pestaña
-                const publicWindow = window.open('', '_blank');
-                publicWindow.document.write(publicPageContent);
-                publicWindow.document.close();
-            });
-            
-            // Función para generar el HTML de la página pública
-            function createPublicPage(data) {
-                return `<!DOCTYPE html>
-                <html lang="es">
-                <head>
-                    <meta charset="UTF-8">
-                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                    <title>Publicación - SnapVISUAL</title>
-                    <style>
-                        /* Copia de los estilos originales */
-                        ${document.querySelector('style').innerHTML}
-                    </style>
-                </head>
-                <body class="public-version">
-                    <header>
-                        <div class="container header-container">
-                            <a href="#hero" class="logo-editor-container">
-                                <img src="${data.logo}" alt="SnapVISUAL Logo" id="logo">
-                            </a>
-                        </div>
-                    </header>
+    <div class="hero-slides">
+      <!-- Slide 1 -->
+      <div class="hero-slide slide-1 active">
+        <div class="slide-content">
+          <h1 class="main-title">Ariel Clean</h1>
+          <h2 class="sub-title">Bogotá</h2>
+          <div class="schedule">
+            <img src="https://cdn-icons-png.flaticon.com/512/2784/2784459.png" alt="Reloj" class="clock-icon" style="width:24px;height:24px;filter:invert(1);">
+            <span class="schedule-text">Lunes a Domingo 7am a 7pm</span>
+          </div>
+          <a href="#contact" class="cta-button">Contáctanos</a>
+        </div>
+      </div>
 
-                    <main>
-                        <section id="hero" style="background-image: url('${data.heroBg}')">
-                            <div class="hero-content">
-                                <h1>Campaña Fotográfica</h1>
-                                <a href="#contact" class="cta-button">Contáctanos</a>
-                            </div>
-                        </section>
+      <!-- Slide 2 con navegación a secciones -->
+      <div class="hero-slide slide-2">
+        <div class="slide-content">
+          <h2 class="offer-title">LAVAMOS</h2>
+          <div class="service-buttons">
+            <button onclick="scrollToSection('sillas-comedor')">SILLAS DE COMEDOR</button>
+            <button onclick="scrollToSection('colchones')">COLCHONES</button>
+            <button onclick="scrollToSection('sofa-camas')">SOFÁ-CAMAS</button>
+            <button onclick="scrollToSection('salas-sofas')">SALAS / SOFÁS</button>
+            <button onclick="scrollToSection('cojineria-carros')">COJINERÍA DE CARROS</button>
+            <button onclick="scrollToSection('cortinas')">CORTINAS</button>
+            <button onclick="scrollToSection('productos-limpieza')">PRODUCTOS DE LIMPIEZA Y AROMATIZANTES</button>
+          </div>
+        </div>
+      </div>
 
-                        <section id="secondary-content" class="section-padding text-center bg-white">
-                            <div class="container">
-                                <h2 class="section-title">Explora Nuestros Servicios</h2>
-                                <p class="section-text">Descubre cómo podemos ayudarte a capturar momentos inolvidables y crear imágenes impactantes.</p>
-                                <div class="rectangular-images-grid">
-                                    <div class="image-container">
-                                        <img src="${data.images.rect1}" alt="Servicio destacado 1" class="editable-img" data-key="rect1">
-                                    </div>
-                                    <div class="image-container">
-                                        <img src="${data.images.rect2}" alt="Servicio destacado 2" class="editable-img" data-key="rect2">
-                                    </div>
-                                    <div class="image-container">
-                                        <img src="${data.images.rect3}" alt="Servicio destacado 3" class="editable-img" data-key="rect3">
-                                    </div>
-                                    <div class="image-container">
-                                        <img src="${data.images.rect4}" alt="Servicio destacado 4" class="editable-img" data-key="rect4">
-                                    </div>
-                                </div>
-                            </div>
-                        </section>
+      <!-- Slide 3 -->
+      <div class="hero-slide slide-3">
+        <div class="slide-content">
+          <h2 class="offer-title">Ofertas Promoción del mes</h2>
+          <p class="offer-subtitle">Por tan solo 500.000 obtenga un servicio completo</p>
+          <div class="vacuum"></div>
+          <a href="https://wa.me/573125366593" target="_blank" class="whatsapp-btn">
+            <img src="https://cdn-icons-png.flaticon.com/512/220/220236.png" width="24" alt="WhatsApp"> COTIZA YA
+          </a>
+        </div>
+      </div>
 
-                        <section id="service-events" class="service-background-section" style="background-image: url('imagenes/evento_fondo.jpg');">
-                            <div class="service-background-content">
-                                <h3 class="section-subtitle">Fotografía de Eventos</h3>
-                                <p>Capturamos la esencia y los momentos más importantes de tus eventos sociales, corporativos o celebraciones especiales, con un enfoque profesional y creativo.</p>
-                            </div>
-                             <div class="container"> <div class="square-images-grid">
-                                    <div class="image-container">
-                                        <img src="${data.images.event1}" alt="Evento social" class="editable-img" data-key="event1">
-                                    </div>
-                                    <div class="image-container">
-                                        <img src="${data.images.event2}" alt="Evento corporativo" class="editable-img" data-key="event2">
-                                    </div>
-                                    <div class="image-container">
-                                        <img src="${data.images.event3}" alt="Celebración especial" class="editable-img" data-key="event3">
-                                    </div>
-                                    <div class="image-container">
-                                        <img src="${data.images.event4}" alt="Detalle de evento" class="editable-img" data-key="event4">
-                                    </div>
-                                </div>
-                            </div>
-                        </section>
+      <!-- Slide 4 -->
+      <div class="hero-slide slide-4">
+        <div class="slide-content">
+          <div class="video-box">
+            <video class="hero-video" controls autoplay muted>
+              <source src="videos/short.mp4" type="video/mp4">
+              Tu navegador no soporta video.
+            </video>
+          </div>
+          <a href="https://wa.me/573125366593" target="_blank" class="cotiza-btn">COTIZA YA</a>
+        </div>
+      </div>
 
-                        <section id="service-portrait" class="service-background-section bg-white" style="background-image: url('imagenes/retrato_fondo.jpg');">
-                             <div class="service-background-content">
-                                <h3 class="section-subtitle">Sesiones de Retrato</h3>
-                                <p>Creamos retratos artísticos y personalizados que cuentan tu historia, resaltando tu personalidad y estilo único, ya sea individual, familiar o profesional.</p>
-                            </div>
-                            <div class="container">
-                                <div class="square-images-grid">
-                                    <div class="image-container">
-                                        <img src="${data.images.retrato1}" alt="Retrato individual" class="editable-img" data-key="retrato1">
-                                    </div>
-                                    <div class="image-container">
-                                        <img src="${data.images.retrato2}" alt="Retrato familiar" class="editable-img" data-key="retrato2">
-                                    </div>
-                                    <div class="image-container">
-                                        <img src="${data.images.retrato3}" alt="Retrato profesional" class="editable-img" data-key="retrato3">
-                                    </div>
-                                    <div class="image-container">
-                                        <img src="${data.images.retrato4}" alt="Retrato artístico" class="editable-img" data-key="retrato4">
-                                    </div>
-                                </div>
-                            </div>
-                        </section>
+      <!-- Slide 5 - E-commerce MODIFICADO CON SCROLL HORIZONTAL -->
+      <div class="hero-slide slide-5">
+        <div class="ecommerce-content">
+          <div class="rotating-banner" id="rotating-banner">
+            <div class="banner-message active">¡Tenemos el mejor servicio de limpieza!</div>
+            <div class="banner-message">Lavamos y limpiamos</div>
+            <div class="banner-message">Nuestras Promociones y Descuentos para servicios al por mayor es del 10%</div>
+            <div class="banner-message">Limpieza efectiva con los mejores insumos y de calidad</div>
+            <div class="banner-message">Productos de limpieza y aromatizantes</div>
+          </div>
+          
+          <h2 style="text-align:center;color:#333;margin-bottom:20px;">Nuestros Productos</h2>
+          
+          <div class="products-scroll-container" id="products-scroll-container">
+            <div class="products-grid" id="products-grid">
+              <!-- Los productos se cargarán dinámicamente con JavaScript -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 
-                        <section id="service-product" class="service-background-section" style="background-image: url('imagenes/producto_fondo.jpg');">
-                            <div class="service-background-content">
-                                <h3 class="section-subtitle">Fotografía de Producto</h3>
-                                <p>Producimos imágenes de alta calidad que destacan tus productos, perfectas para catálogos, e-commerce y campañas publicitarias, con atención al detalle y la iluminación.</p>
-                            </div>
-                            <div class="container">
-                                <div class="square-images-grid">
-                                    <div class="image-container">
-                                        <img src="${data.images.product1}" alt="Producto para e-commerce" class="editable-img" data-key="product1">
-                                    </div>
-                                    <div class="image-container">
-                                        <img src="${data.images.product2}" alt="Producto en detalle" class="editable-img" data-key="product2">
-                                    </div>
-                                    <div class="image-container">
-                                        <img src="${data.images.product3}" alt="Producto para catálogo" class="editable-img" data-key="product3">
-                                    </div>
-                                    <div class="image-container">
-                                        <img src="${data.images.product4}" alt="Producto publicitario" class="editable-img" data-key="product4">
-                                    </div>
-                                </div>
-                            </div>
-                        </section>
+  <!-- ===== SECCIONES DE CONTENIDO ===== -->
 
-                        <section id="gallery" class="section-padding bg-white text-center">
-                            <div class="container">
-                                <h2 class="section-title">Galería</h2>
-                                <p class="section-text">Aquí puedes ver una muestra de nuestro trabajo.</p>
-                                <div class="gallery-grid">
-                                    <div class="image-container">
-                                        <img src="${data.images.gallery1}" alt="Foto de Galería 1" class="editable-img" data-key="gallery1">
-                                    </div>
-                                    <div class="image-container">
-                                        <img src="${data.images.gallery2}" alt="Foto de Galería 2" class="editable-img" data-key="gallery2">
-                                    </div>
-                                    <div class="image-container">
-                                        <img src="${data.images.gallery3}" alt="Foto de Galería 3" class="editable-img" data-key="gallery3">
-                                    </div>
-                                    <div class="image-container">
-                                        <img src="${data.images.gallery4}" alt="Foto de Galería 4" class="editable-img" data-key="gallery4">
-                                    </div>
-                                    <div class="image-container">
-                                        <img src="${data.images.gallery5}" alt="Foto de Galería 5" class="editable-img" data-key="gallery5">
-                                    </div>
-                                    <div class="image-container">
-                                        <img src="${data.images.gallery6}" alt="Foto de Galería 6" class="editable-img" data-key="gallery6">
-                                    </div>
-                                </div>
-                            </div>
-                        </section>
+  <section id="secondary-content" class="section-padding text-center bg-white">
+    <div class="container">
+      <h2 class="section-title">Explora Nuestros Servicios</h2>
+      <p class="section-text">Descubre cómo podemos ayudarte a mantener tus muebles y espacios limpios y frescos.</p>
+      <div class="rectangular-images-grid">
+        <div class="image-container">
+          <img src="imagenes/combo.jpg" alt="Servicio destacado 1" class="editable-img" data-key="rect1">
+          <button class="image-btn update-img-btn" data-target="rect1">Actualizar</button>
+        </div>
+        <div class="image-container">
+          <img src="imagenes/combo2.jpg" alt="Servicio destacado 2" class="editable-img" data-key="rect2">
+          <button class="image-btn update-img-btn" data-target="rect2">Actualizar</button>
+        </div>
+        <div class="image-container">
+          <img src="imagenes/combolimpiapisosymuebles.png" alt="Servicio destacado 3" class="editable-img" data-key="rect3">
+          <button class="image-btn update-img-btn" data-target="rect3">Actualizar</button>
+        </div>
+        <div class="image-container">
+          <img src="imagenes/incienso-limpia-casa_922109_37260496.jpg" alt="Servicio destacado 4" class="editable-img" data-key="rect4">
+          <button class="image-btn update-img-btn" data-target="rect4">Actualizar</button>
+        </div>
+      </div>
+    </div>
+  </section>
 
-                        <section id="contact" class="text-center">
-                            <div class="container">
-                                <h2 class="section-title">Contáctanos</h2>
-                                <p class="section-text">¿Listo para tu próxima campaña fotográfica o necesitas más información? ¡Escríbenos!</p>
-                                
-                                <div class="logo-editor">
-                                    <img id="contact-logo" src="${data.logo}" alt="Logo de contacto" class="logo-preview">
-                                </div>
-                                
-                                <form action="#" method="POST"> 
-                                    <div class="form-field-margin">
-                                        <label for="name">Nombre Completo:</label>
-                                        <input type="text" id="name" name="name" placeholder="Tu Nombre" required>
-                                    </div>
-                                    <div class="form-field-margin">
-                                        <label for="email">Correo Electrónico:</label>
-                                        <input type="email" id="email" name="email" placeholder="tu@email.com" required>
-                                    </div>
-                                    <div class="form-textarea-margin">
-                                        <label for="message">Mensaje:</label>
-                                        <textarea id="message" name="message" rows="5" placeholder="Cuéntanos sobre tu proyecto..." required></textarea>
-                                    </div>
-                                    <div class="text-center">
-                                        <a href="https://wa.me/573127439018" target="_blank" class="whatsapp-button" aria-label="Contactar por WhatsApp">
-                                            <svg viewBox="0 0 32 32"><path d=" M19.11 17.205c-.372 0-1.088 1.39-1.518 1.39a.63.63 0 0 1-.315-.1c-.802-.402-1.504-.817-2.163-1.447-.545-.516-1.146-1.29-1.46-1.963a.426.426 0 0 1-.073-.215c0-.33.99-.945.99-1.49 0-.143-.73-2.09-.832-2.335-.143-.372-.214-.487-.6-.487-.187 0-.36-.044-.53-.044-.302 0-.53.115-.746.315-.688.645-1.032 1.318-1.06 2.264v.114c-.015.99.472 1.977 1.017 2.78 1.23 1.82 2.506 3.41 4.554 4.34.616.287 2.035.888 2.722.888.817 0 2.15-.515 2.438-1.508.287-.99.287-1.84.13-2.09-.128-.25-.3-.36-.6-.36m-6.508 6.71a9.26 9.26 0 0 0 4.767 4.767c.88.36 1.88.47 2.64.36 2.72-.402 3.78-2.18 3.78-4.94v-5.1a2.09 2.09 0 0 0-1.032-1.84A10.22 10.22 0 0 0 16.315 4.1a1.73 1.73 0 0 0-1.46.044c-.99.444-1.638 1.39-1.753 2.473-.073.615.044 1.23.315 1.752L10.56 12.2c-.044.13-.1.214-.1.33s0 .215.044.33l2.264 3.045c.044.115.1.214.1.33s0 .214-.044.33l-2.474 3.78c-.044.13-.073.24-.073.36 0 .24.1.444.214.616.13.187.287.33.472.444a1.37 1.37 0 0 0 .615.073c.215 0 .4-.044.56-.114L15.8 21.19a.425.425 0 0 1 .36.044l.13.072c.517.24.96.516 1.33.817.39.287.73.545.99.746.24.214.36.472.36.746s-.1.53-.315.746zM16 2C7.972 2 2 7.972 2 16s5.972 14 14 14 14-5.972 14-14S24.028 2 16 2z" fill="white"></path></svg>
-                                            Contactar por WhatsApp
-                                        </a>
-                                    </div>
-                                    <div class="social-media-icons">
-                                        <a href="#" target="_blank" aria-label="Facebook de SnapVISUAL"> <svg viewBox="0 0 24 24"><path d="M12 2.04C6.5 2.04 2 6.53 2 12.06c0 5.52 4.5 10.02 10 10.02s10-4.5 10-10.02C22 6.53 17.5 2.04 12 2.04zM13.6 19.14v-5.95h2.02l.3-2.34h-2.32V9.45c0-.68.19-1.14 1.16-1.14h1.24V6.12c-.21-.03-.95-.09-1.8-.09-1.83 0-3.08.98-3.08 3.16v1.72H9.38v2.34h1.84v5.95h2.38z"/></svg>
-                                        </a>
-                                        <a href="#" target="_blank" aria-label="Instagram de SnapVISUAL"> <svg viewBox="0 0 24 24"><path d="M12 2c-2.72 0-3.05.01-4.12.06-1.06.05-1.79.23-2.42.47-.65.25-1.23.58-1.77 1.14S2.78 5.28 2.53 5.93c-.24.63-.42 1.36-.47 2.42C2.01 9.43 2 9.76 2 12s.01 2.57.06 3.64c.05 1.06.23 1.79.47 2.42.25.65.58 1.23 1.14 1.77.54.54 1.12.87 1.77 1.14.63.24 1.36.42 2.42.47 1.07.05 1.4.06 4.12.06s3.05-.01 4.12-.06c1.06-.05 1.79-.23 2.42-.47.65-.25 1.23-.58 1.77-1.14.54-.54.87-1.12 1.14-1.77.24-.63.42-1.36.47-2.42.05-1.07.06-1.4.06-4.12s-.01-2.57-.06-3.64c-.05-1.06-.23-1.79-.47-2.42-.25-.65-.58-1.23-1.14-1.77-.54-.54-1.12-.87-1.77-1.14-.63-.24-1.36-.42-2.42-.47C15.05 2.01 14.72 2 12 2zm0 1.8c2.65 0 2.95.01 4 .06 1.03.05 1.5.2 1.82.33.4.16.7.35.98.63.28.28.47.58.63.98.13.32.28.79.33 1.82.04 1.05.05 1.35.05 4s-.01 2.95-.06 4c-.05 1.03-.2 1.5-.33 1.82-.16.4-.35.7-.63.98-.28.28-.58.47-.98.63-.32.13-.79.28-1.82.33-1.05.04-1.35.05-4 .05s-2.95-.01-4-.06c-1.03-.05-1.5-.2-1.82-.33-.4-.16-.7-.35-.98.63-.28-.28-.47-.58-.63-.98-.13-.32-.28-.79-.33-1.82C4.01 14.95 4 14.65 4 12s.01-2.95.06-4c.05-1.03.2-1.5.33-1.82.16-.4.35-.7.63-.98.28-.28.58.47.98-.63.32-.13.79-.28 1.82-.33C9.05 3.81 9.35 3.8 12 3.8zm0 7.35c-2.62 0-4.75 2.13-4.75 4.75S9.38 16.65 12 16.65s4.75-2.13 4.75-4.75S14.62 7.15 12 7.15zm0 7.7c-1.63 0-2.95-1.32-2.95-2.95s1.32-2.95 2.95-2.95 2.95 1.32 2.95 2.95-1.32 2.95-2.95 2.95zm4.95-8.1c-.61 0-1.1.49-1.1 1.1s.49 1.1 1.1 1.1 1.1-.49 1.1-1.1-.49-1.1-1.1-1.1z"/></svg>
-                                        </a>
-                                        <a href="#" target="_blank" aria-label="TikTok de SnapVISUAL"> <svg viewBox="0 0 24 24"><path d=" M19.11 17.205c-.372 0-1.088 1.39-1.518 1.39a.63.63 0 0 1-.315-.1c-.802-.402-1.504-.817-2.163-1.447-.545-.516-1.146-1.29-1.46-1.963a.426.426 0 0 1-.073-.215c0-.33.99-.945.99-1.49 0-.143-.73-2.09-.832-2.335-.143-.372-.214-.487-.6-.487-.187 0-.36-.044-.53-.044-.302 0-.53.115-.746.315-.688.645-1.032 1.318-1.06 2.264v.114c-.015.99.472 1.977 1.017 2.78 1.23 1.82 2.506 3.41 4.554 4.34.616.287 2.035.888 2.722.888.817 0 2.15-.515 2.438-1.508.287-.99.287-1.84.13-2.09-.128-.25-.3-.36-.6-.36m-6.508 6.71a9.26 9.26 0 0 0 4.767 4.767c.88.36 1.88.47 2.64.36 2.72-.402 3.78-2.18 3.78-4.94v-5.1a2.09 2.09 0 0 0-1.032-1.84A10.22 10.22 0 0 0 16.315 4.1a1.73 1.73 0 0 0-1.46.044c-.99.444-1.638 1.39-1.753 2.473-.073.615.044 1.23.315 1.752L10.56 12.2c-.044.13-.1.214-.1.33s0 .215.044.33l2.264 3.045c.044.115.1.214.1.33s0 .214-.044.33l-2.474 3.78c-.044.13-.073.24-.073.36 0 .24.1.444.214.616.13.187.287.33.472.444a1.37 1.37 0 0 0 .615.073c.215 0 .4-.044.56-.114L15.8 21.19a.425.425 0 0 1 .36.044l.13.072c.517.24.96.516 1.33.817.39.287.73.545.99.746.24.214.36.472.36.746s-.1.53-.315.746zM16 2C7.972 2 2 7.972 2 16s5.972 14 14 14 14-5.972 14-14S24.028 2 16 2z" fill="white"></path></svg>
-                                        </a>
-                                    </div>
-                                </form>
-                            </div>
-                        </section>
-                    </main>
+  <!-- Secciones con fondo de imagen y diseño unificado -->
+  <section id="service-events" class="service-background-section" style="background-image:url('imagenes/Portada1.jpeg');">
+    <div class="container">
+      <h2 class="section-title">Limpieza de Muebles</h2>
+      <p class="section-text">Revitalizamos tus muebles con técnicas profesionales que eliminan manchas, ácaros y malos olores, devolviéndoles su aspecto original.</p>
+      <div class="rectangular-images-grid">
+        <div class="image-container">
+          <img src="imagenes/combo2.jpg" alt="Evento social" class="editable-img" data-key="event1">
+          <button class="image-btn update-img-btn" data-target="event1">Actualizar</button>
+        </div>
+        <div class="image-container">
+          <img src="imagenes/Velas-Aroma.jpg" alt="Evento corporativo" class="editable-img" data-key="event2">
+          <button class="image-btn update-img-btn" data-target="event2">Actualizar</button>
+        </div>
+        <div class="image-container">
+          <img src="imagenes/precio.jpg" alt="Celebración especial" class="editable-img" data-key="event3">
+          <button class="image-btn update-img-btn" data-target="event3">Actualizar</button>
+        </div>
+        <div class="image-container">
+          <img src="imagenes/promo4.jpg" alt="Detalle de evento" class="editable-img" data-key="event4">
+          <button class="image-btn update-img-btn" data-target="event4">Actualizar</button>
+        </div>
+      </div>
+    </div>
+  </section>
 
-                    <footer>
-                        <div class="container">
-                            <p>&copy; 2024 SnapVISUAL. Todos los derechos reservados.</p>
-                            <p class="footer-subtext">Diseño web con ❤️</p>
-                        </div>
-                    </footer>
-                </body>
-                </html>`;
-            }
-            
-            // Cerrar modal si se hace clic fuera del contenido
-            window.addEventListener('click', function(event) {
-                if (event.target === modal) {
-                    modal.style.display = 'none';
-                }
-            });
+  <section id="service-portrait" class="service-background-section" style="background-image:url('imagenes/section1.jpg');">
+    <div class="container">
+      <h2 class="section-title">Limpieza de Colchones</h2>
+      <p class="section-text">Eliminamos ácaros, manchas y olores de tus colchones, garantizando un sueño más saludable y confortable.</p>
+      <div class="rectangular-images-grid">
+        <div class="image-container">
+          <img src="imagenes/section1111.jpg" alt="Retrato individual" class="editable-img" data-key="retrato1">
+          <button class="image-btn update-img-btn" data-target="retrato1">Actualizar</button>
+        </div>
+        <div class="image-container">
+          <img src="imagenes/section1222.jpg" alt="Retrato familiar" class="editable-img" data-key="retrato2">
+          <button class="image-btn update-img-btn" data-target="retrato2">Actualizar</button>
+        </div>
+        <div class="image-container">
+          <img src="imagenes/section1223.jpg" alt="Retrato profesional" class="editable-img" data-key="retrato3">
+          <button class="image-btn update-img-btn" data-target="retrato3">Actualizar</button>
+        </div>
+        <div class="image-container">
+          <img src="imagenes/section11111.jpg" alt="Retrato artístico" class="editable-img" data-key="retrato4">
+          <button class="image-btn update-img-btn" data-target="retrato4">Actualizar</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="service-product" class="service-background-section" style="background-image:url('imagenes/section11.jpg');">
+    <div class="container">
+      <h2 class="section-title">Productos de Limpieza</h2>
+      <p class="section-text">Ofrecemos productos especializados para el cuidado y mantenimiento de tus muebles y espacios, con fórmulas efectivas y seguras.</p>
+      <div class="rectangular-images-grid">
+        <div class="image-container">
+          <img src="imagenes/Cremamedicinal1.jpg" alt="Producto para e-commerce" class="editable-img" data-key="product1">
+          <button class="image-btn update-img-btn" data-target="product1">Actualizar</button>
+        </div>
+        <div class="image-container">
+          <img src="imagenes/producto_cuadrada_22.jpeg" alt="Producto en detalle" class="editable-img" data-key="product2">
+          <button class="image-btn update-img-btn" data-target="product2">Actualizar</button>
+        </div>
+        <div class="image-container">
+          <img src="imagenes/producto_cuadrada_33.jpeg" alt="Producto para catálogo" class="editable-img" data-key="product3">
+          <button class="image-btn update-img-btn" data-target="product3">Actualizar</button>
+        </div>
+        <div class="image-container">
+          <img src="imagenes/producto_cuadrada_44.jpeg" alt="Producto publicitario" class="editable-img" data-key="product4">
+          <button class="image-btn update-img-btn" data-target="product4">Actualizar</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="secondary-content" class="section-padding text-center bg-white">
+    <div class="container">
+      <h2 class="section-title">Explora Nuestros Servicios</h2>
+      <p class="section-text">Descubre cómo podemos ayudarte a mantener tus muebles y espacios limpios y frescos.</p>
+      <div class="rectangular-images-grid">
+        <div class="image-container">
+          <img src="imagenes/combo.jpg" alt="Servicio destacado 1" class="editable-img" data-key="rect1">
+          <button class="image-btn update-img-btn" data-target="rect1">Actualizar</button>
+        </div>
+        <div class="image-container">
+          <img src="imagenes/combo2.jpg" alt="Servicio destacado 2" class="editable-img" data-key="rect2">
+          <button class="image-btn update-img-btn" data-target="rect2">Actualizar</button>
+        </div>
+        <div class="image-container">
+          <img src="imagenes/combolimpiapisosymuebles.png" alt="Servicio destacado 3" class="editable-img" data-key="rect3">
+          <button class="image-btn update-img-btn" data-target="rect3">Actualizar</button>
+        </div>
+        <div class="image-container">
+          <img src="imagenes/incienso-limpia-casa_922109_37260496.jpg" alt="Servicio destacado 4" class="editable-img" data-key="rect4">
+          <button class="image-btn update-img-btn" data-target="rect4">Actualizar</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Secciones para cada servicio del Slide 2 -->
+  <section id="sillas-comedor" class="service-background-section" style="background-image:url('imagenes/sofaback.jpg');">
+    <div class="container">
+      <h2 class="section-title">Limpieza de Sillas de Comedor</h2>
+      <p class="section-text">Revitalizamos tus sillas de comedor con técnicas profesionales que eliminan manchas, ácaros y malos olores, devolviéndoles su aspecto original.</p>
+      <div class="rectangular-images-grid">
+        <div class="image-container">
+          <img src="imagenes/SofaSucio.jpeg" alt="Silla de comedor 1" class="editable-img" data-key="silla1">
+          <button class="image-btn update-img-btn" data-target="silla1">Actualizar</button>
+        </div>
+        <div class="image-container">
+          <img src="imagenes/section1111.jpg" alt="Silla de comedor 2" class="editable-img" data-key="silla2">
+          <button class="image-btn update-img-btn" data-target="silla2">Actualizar</button>
+        </div>
+        <div class="image-container">
+          <img src="imagenes/section1222.jpg" alt="Silla de comedor 3" class="editable-img" data-key="silla3">
+          <button class="image-btn update-img-btn" data-target="silla3">Actualizar</button>
+        </div>
+        <div class="image-container">
+          <img src="imagenes/section122.jpg" alt="Silla de comedor 4" class="editable-img" data-key="silla4">
+          <button class="image-btn update-img-btn" data-target="silla4">Actualizar</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="colchones" class="service-background-section" style="background-image:url('imagenes/colchonback.jpg');">
+    <div class="container">
+      <h2 class="section-title">Limpieza de Colchones</h2>
+      <p class="section-text">Eliminamos ácaros, manchas y olores de tus colchones, garantizando un sueño más saludable y confortable.</p>
+      <div class="rectangular-images-grid">
+        <div class="image-container">
+          <img src="imagenes/section1121111.jpg" alt="Colchón 1" class="editable-img" data-key="colchon1">
+          <button class="image-btn update-img-btn" data-target="colchon1">Actualizar</button>
+        </div>
+        <div class="image-container">
+          <img src="imagenes/colchon11.jpg" alt="Colchón 2" class="editable-img" data-key="colchon2">
+          <button class="image-btn update-img-btn" data-target="colchon2">Actualizar</button>
+        </div>
+        <div class="image-container">
+          <img src="imagenes/colchon21.jpg" alt="Colchón 3" class="editable-img" data-key="colchon3">
+          <button class="image-btn update-img-btn" data-target="colchon3">Actualizar</button>
+        </div>
+        <div class="image-container">
+          <img src="imagenes/cochon4.jpg" alt="Colchón 4" class="editable-img" data-key="colchon4">
+          <button class="image-btn update-img-btn" data-target="colchon4">Actualizar</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="sofa-camas" class="service-background-section" style="background-image:url('imagenes/porback.jpg');">
+    <div class="container">
+      <h2 class="section-title">Limpieza de Sofás </h2>
+      <p class="section-text">Limpieza profunda de sofá-camas para eliminar manchas, ácaros y olores, garantizando comodidad e higiene.</p>
+      <div class="rectangular-images-grid">
+        <div class="image-container">
+          <img src="imagenes/sofacam.jpg" alt="Sofá-cama 1" class="editable-img" data-key="sofa-cama1">
+          <button class="image-btn update-img-btn" data-target="sofa-cama1">Actualizar</button>
+        </div>
+        <div class="image-container">
+          <img src="imagenes/SofaLimpio.jpeg" alt="Sofá-cama 2" class="editable-img" data-key="sofa-cama2">
+          <button class="image-btn update-img-btn" data-target="sofa-cama2">Actualizar</button>
+        </div>
+        <div class="image-container">
+          <img src="imagenes/sofacam2.jpg" alt="Sofá-cama 3" class="editable-img" data-key="sofa-cama3">
+          <button class="image-btn update-img-btn" data-target="sofa-cama3">Actualizar</button>
+        </div>
+        <div class="image-container">
+          <img src="imagenes/sofacam4.jpg" alt="Sofá-cama 4" class="editable-img" data-key="sofa-cama4">
+          <button class="image-btn update-img-btn" data-target="sofa-cama4">Actualizar</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="salas-sofas" class="service-background-section" style="background-image:url('imagenes/oferta5.jpg');">
+    <div class="container">
+      <h2 class="section-title">Limpieza de Salas y Sofás</h2>
+      <p class="section-text">Revitalizamos tus salas y sofás con técnicas profesionales que eliminan manchas, ácaros y malos olores.</p>
+      <div class="rectangular-images-grid">
+        <div class="image-container">
+          <img src="imagenes/limpieza4.jpg" alt="Sala 1" class="editable-img" data-key="sala1">
+          <button class="image-btn update-img-btn" data-target="sala1">Actualizar</button>
+        </div>
+        <div class="image-container">
+          <img src="imagenes/limpiezasalas.jpg" alt="Sala 2" class="editable-img" data-key="sala2">
+          <button class="image-btn update-img-btn" data-target="sala2">Actualizar</button>
+        </div>
+        <div class="image-container">
+          <img src="imagenes/limpieza3.jpg" alt="Sala 3" class="editable-img" data-key="sala3">
+          <button class="image-btn update-img-btn" data-target="sala3">Actualizar</button>
+        </div>
+        <div class="image-container">
+          <img src="imagenes/limpieza2.jpg" alt="Sala 4" class="editable-img" data-key="sala4">
+          <button class="image-btn update-img-btn" data-target="sala4">Actualizar</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="cojineria-carros" class="service-background-section" style="background-image:url('imagenes/cojineria-carros-bg.jpg');">
+    <div class="container">
+      <h2 class="section-title">Limpieza de Cojinería de Carros</h2>
+      <p class="section-text">Limpieza profunda de asientos y cojinería de vehículos para eliminar manchas, olores y ácaros.</p>
+      <div class="rectangular-images-grid">
+        <div class="image-container">
+          <img src="imagenes/cojineria1.jpg" alt="Cojinería 1" class="editable-img" data-key="cojineria1">
+          <button class="image-btn update-img-btn" data-target="cojineria1">Actualizar</button>
+        </div>
+        <div class="image-container">
+          <img src="imagenes/cojineria2.jpg" alt="Cojinería 2" class="editable-img" data-key="cojineria2">
+          <button class="image-btn update-img-btn" data-target="cojineria2">Actualizar</button>
+        </div>
+        <div class="image-container">
+          <img src="imagenes/cojineria3.jpg" alt="Cojinería 3" class="editable-img" data-key="cojineria3">
+          <button class="image-btn update-img-btn" data-target="cojineria3">Actualizar</button>
+        </div>
+        <div class="image-container">
+          <img src="imagenes/cojineria4.jpg" alt="Cojinería 4" class="editable-img" data-key="cojineria4">
+          <button class="image-btn update-img-btn" data-target="cojineria4">Actualizar</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="cortinas" class="service-background-section" style="background-image:url('imagenes/cortinas-bg.jpg');">
+    <div class="container">
+      <h2 class="section-title">Limpieza de Cortinas</h2>
+      <p class="section-text">Limpieza profesional de cortinas para eliminar polvo, ácaros y manchas, devolviéndoles su frescura y brillo.</p>
+      <div class="rectangular-images-grid">
+        <div class="image-container">
+          <img src="imagenes/cortina1.jpg" alt="Cortina 1" class="editable-img" data-key="cortina1">
+          <button class="image-btn update-img-btn" data-target="cortina1">Actualizar</button>
+        </div>
+        <div class="image-container">
+          <img src="imagenes/cortina2.jpg" alt="Cortina 2" class="editable-img" data-key="cortina2">
+          <button class="image-btn update-img-btn" data-target="cortina2">Actualizar</button>
+        </div>
+        <div class="image-container">
+          <img src="imagenes/cortina3.jpg" alt="Cortina 3" class="editable-img" data-key="cortina3">
+          <button class="image-btn update-img-btn" data-target="cortina3">Actualizar</button>
+        </div>
+        <div class="image-container">
+          <img src="imagenes/cortina4.jpg" alt="Cortina 4" class="editable-img" data-key="cortina4">
+          <button class="image-btn update-img-btn" data-target="cortina4">Actualizar</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="productos-limpieza" class="service-background-section" style="background-image:url('imagenes/productos-limpieza-bg.jpg');">
+    <div class="container">
+      <h2 class="section-title">Productos de Limpieza y Aromatizantes</h2>
+      <p class="section-text">Ofrecemos productos especializados para el cuidado y mantenimiento de tus muebles y espacios, con fórmulas efectivas y seguras.</p>
+      <div class="rectangular-images-grid">
+        <div class="image-container">
+          <img src="imagenes/producto1.jpg" alt="Producto 1" class="editable-img" data-key="producto1">
+          <button class="image-btn update-img-btn" data-target="producto1">Actualizar</button>
+        </div>
+        <div class="image-container">
+          <img src="imagenes/producto2.jpg" alt="Producto 2" class="editable-img" data-key="producto2">
+          <button class="image-btn update-img-btn" data-target="producto2">Actualizar</button>
+        </div>
+        <div class="image-container">
+          <img src="imagenes/producto3.jpg" alt="Producto 3" class="editable-img" data-key="producto3">
+          <button class="image-btn update-img-btn" data-target="producto3">Actualizar</button>
+        </div>
+        <div class="image-container">
+          <img src="imagenes/producto4.jpg" alt="Producto 4" class="editable-img" data-key="producto4">
+          <button class="image-btn update-img-btn" data-target="producto4">Actualizar</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Secciones adicionales -->
+  <section id="venta-productos-aseo" class="service-background-section" style="background-image:url('imagenes/venta-productos-bg.jpg');">
+    <div class="container">
+      <h2 class="section-title">Venta de Productos de Aseo</h2>
+      <p class="section-text">Ofrecemos una amplia gama de productos de limpieza y aseo para el hogar, con la mejor calidad y precios competitivos.</p>
+      <div class="rectangular-images-grid">
+        <div class="image-container">
+          <img src="imagenes/aseo1.jpg" alt="Producto aseo 1" class="editable-img" data-key="aseo1">
+          <button class="image-btn update-img-btn" data-target="aseo1">Actualizar</button>
+        </div>
+        <div class="image-container">
+          <img src="imagenes/aseo2.jpg" alt="Producto aseo 2" class="editable-img" data-key="aseo2">
+          <button class="image-btn update-img-btn" data-target="aseo2">Actualizar</button>
+        </div>
+        <div class="image-container">
+          <img src="imagenes/aseo3.jpg" alt="Producto aseo 3" class="editable-img" data-key="aseo3">
+          <button class="image-btn update-img-btn" data-target="aseo3">Actualizar</button>
+        </div>
+        <div class="image-container">
+          <img src="imagenes/aseo4.jpg" alt="Producto aseo 4" class="editable-img" data-key="aseo4">
+          <button class="image-btn update-img-btn" data-target="aseo4">Actualizar</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="eventos" class="service-background-section" style="background-image:url('imagenes/backcama.jpg');">
+    <div class="container">
+      <h2 class="section-title">Servicios para Eventos</h2>
+      <p class="section-text">Ofrecemos servicios especializados de limpieza para eventos, garantizando espacios impecables para tus celebraciones.</p>
+      <div class="rectangular-images-grid">
+        <div class="image-container">
+          <img src="imagenes/cama1.jpg" alt="Evento 1" class="editable-img" data-key="evento1">
+          <button class="image-btn update-img-btn" data-target="evento1">Actualizar</button>
+        </div>
+        <div class="image-container">
+          <img src="imagenes/cama2.jpg" alt="Evento 2" class="editable-img" data-key="evento2">
+          <button class="image-btn update-img-btn" data-target="evento2">Actualizar</button>
+        </div>
+        <div class="image-container">
+          <img src="imagenes/cAMA3.jpg" alt="Evento 3" class="editable-img" data-key="evento3">
+          <button class="image-btn update-img-btn" data-target="evento3">Actualizar</button>
+        </div>
+        <div class="image-container">
+          <img src="imagenes/CAMA4.jpg" alt="Evento 4" class="editable-img" data-key="evento4">
+          <button class="image-btn update-img-btn" data-target="evento4">Actualizar</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="gallery" class="section-padding bg-white text-center">
+    <div class="container">
+      <h2 class="section-title">Galería</h2>
+      <p class="section-text">Aquí puedes ver una muestra de nuestro trabajo.</p>
+      <div class="gallery-grid">
+        <div class="image-container">
+          <img src="imagenes/OfertaOctubre.jpg" alt="Foto de Galería 1" class="editable-img" data-key="gallery1">
+          <button class="image-btn update-img-btn" data-target="gallery1">Actualizar</button>
+        </div>
+        <div class="image-container">
+          <img src="imagenes/producto_cuadrada_269.jpeg" alt="Foto de Galería 2" class="editable-img" data-key="gallery2">
+          <button class="image-btn update-img-btn" data-target="gallery2">Actualizar</button>
+        </div>
+        <div class="image-container">
+          <img src="imagenes/Velas-Aroma.jpg" alt="Foto de Galería 3" class="editable-img" data-key="gallery3">
+          <button class="image-btn update-img-btn" data-target="gallery3">Actualizar</button>
+        </div>
+        <div class="image-container">
+          <img src="imagenes/kidlimñlimpiamuebles.jpg" alt="Foto de Galería 4" class="editable-img" data-key="gallery4">
+          <button class="image-btn update-img-btn" data-target="gallery4">Actualizar</button>
+        </div>
+        <div class="image-container">
+          <img src="imagenes/ofertapisosuavizantesilicona.webp" alt="Foto de Galería 5" class="editable-img" data-key="gallery5">
+          <button class="image-btn update-img-btn" data-target="gallery5">Actualizar</button>
+        </div>
+        <div class="image-container">
+          <img src="imagenes/polvodeincienciocombo.avif" alt="Foto de Galería 6" class="editable-img" data-key="gallery6">
+          <button class="image-btn update-img-btn" data-target="gallery6">Actualizar</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Formulario de Contacto MEJORADO -->
+  <section id="contact" class="text-center">
+    <div class="container">
+      <h2 class="section-title">Contáctanos</h2>
+      <p class="section-text">¿Necesitas nuestros servicios de limpieza o más información? ¡Escríbenos!</p>
+      <div class="logo-editor">
+        <img id="contact-logo" src="imagenes/Logo Be Rabbit FInal.png" alt="Logo de contacto" class="logo-preview">
+        <button class="action-btn" id="update-logo-btn">Actualizar Logo</button>
+      </div>
+      <form id="contact-form" action="#" method="POST">
+        <div class="form-field-margin">
+          <label for="name">Nombre Completo:</label>
+          <input type="text" id="name" name="name" placeholder="Tu Nombre" required>
+        </div>
+        <div class="form-field-margin">
+          <label for="phone">Celular:</label>
+          <input type="tel" id="phone" name="phone" placeholder="Tu número de celular" required>
+        </div>
+        <div class="form-field-margin">
+          <label for="email">Correo Electrónico:</label>
+          <input type="email" id="email" name="email" placeholder="tu@email.com" required>
+        </div>
+        <div class="form-textarea-margin">
+          <label for="message">Mensaje:</label>
+          <textarea id="message" name="message" rows="5" placeholder="Cuéntanos sobre tus necesidades de limpieza..." required></textarea>
+        </div>
+        <div class="text-center">
+          <a href="https://wa.me/573125366593" target="_blank" class="whatsapp-button" aria-label="Contactar por WhatsApp">
+            <svg viewBox="0 0 32 32"><path d="M19.11 17.205c-.372 0-1.088 1.39-1.518 1.39a.63.63 0 0 1-.315-.1c-.802-.402-1.504-.817-2.163-1.447-.545-.516-1.146-1.29-1.46-1.963a.426.426 0 0 1-.073-.215c0-.33.99-.945.99-1.49 0-.143-.73-2.09-.832-2.335-.143-.372-.214-.487-.6-.487-.187 0-.36-.044-.53-.044-.302 0-.53.115-.746.315-.688.645-1.032 1.318-1.06 2.264v.114c-.015.99.472 1.977 1.017 2.78 1.23 1.82 2.506 3.41 4.554 4.34.616.287 2.035.888 2.722.888.817 0 2.15-.515 2.438-1.508.287-.99.287-1.84.13-2.09-.128-.25-.3-.36-.6-.36m-6.508 6.71a9.26 9.26 0 0 0 4.767 4.767c.88.36 1.88.47 2.64.36 2.72-.402 3.78-2.18 3.78-4.94v-5.1a2.09 2.09 0 0 0-1.032-1.84A10.22 10.22 0 0 0 16.315 4.1a1.73 1.73 0 0 0-1.46.044c-.99.444-1.638 1.39-1.753 2.473-.073.615.044 1.23.315 1.752L10.56 12.2c-.044.13-.1.214-.1.33s0 .215.044.33l2.264 3.045c.044.115.1.214.1.33s0 .214-.044.33l-2.474 3.78c-.044.13-.073.24-.073.36 0 .24.1.444.214.616.13.187.287.33.472.444a1.37 1.37 0 0 0 .615.073c.215 0 .4-.044.56-.114L15.8 21.19a.425.425 0 0 1 .36.044l.13.072c.517.24.96.516 1.33.817.39.287.73.545.99.746.24.214.36.472.36.746s-.1.53-.315.746zM16 2C7.972 2 2 7.972 2 16s5.972 14 14 14 14-5.972 14-14S24.028 2 16 2z" fill="white"></path></svg>
+            Contactar por WhatsApp
+          </a>
+          <button type="button" class="contact-submit-btn" onclick="sendContactInfo()">
+            Enviar Información y Ofertas
+          </button>
+        </div>
+        <div class="social-media-icons">
+          <a href="#" target="_blank" aria-label="Facebook"><svg viewBox="0 0 24 24"><path d="M12 2.04C6.5 2.04 2 6.53 2 12.06c0 5.52 4.5 10.02 10 10.02s10-4.5 10-10.02C22 6.53 17.5 2.04 12 2.04zM13.6 19.14v-5.95h2.02l.3-2.34h-2.32V9.45c0-.68.19-1.14 1.16-1.14h1.24V6.12c-.21-.03-.95-.09-1.8-.09-1.83 0-3.08.98-3.08 3.16v1.72H9.38v2.34h1.84v5.95h2.38z"/></svg></a>
+          <a href="#" target="_blank" aria-label="Instagram"><svg viewBox="0 0 24 24"><path d="M12 2c-2.72 0-3.05.01-4.12.06-1.06.05-1.79.23-2.42.47-.65.25-1.23.58-1.77 1.14S2.78 5.28 2.53 5.93c-.24.63-.42 1.36-.47 2.42C2.01 9.43 2 9.76 2 12s.01 2.57.06 3.64c.05 1.06.23 1.79.47 2.42.25.65.58 1.23 1.14 1.77.54.54 1.12.87 1.77 1.14.63.24 1.36.42 2.42.47 1.07.05 1.4.06 4.12.06s3.05-.01 4.12-.06c1.06-.05 1.79-.23 2.42-.47.65-.25 1.23-.58 1.77-1.14.54-.54.87-1.12 1.14-1.77.24-.63.42-1.36.47-2.42.05-1.07.06-1.4.06-4.12s-.01-2.57-.06-3.64c-.05-1.06-.23-1.79-.47-2.42-.25-.65-.58-1.23-1.14-1.77-.54-.54-1.12-.87-1.77-1.14-.63-.24-1.36-.42-2.42-.47C15.05 2.01 14.72 2 12 2zm0 1.8c2.65 0 2.95.01 4 .06 1.03.05 1.5.2 1.82.33.4.16.7.35.98.63.28.28.47.58.63.98.13.32.28.79.33 1.82.04 1.05.05 1.35.05 4s-.01 2.95-.06 4c-.05 1.03-.2 1.5-.33 1.82-.16.4-.35.7-.63.98-.28.28-.58.47-.98.63-.32.13-.79.28-1.82.33-1.05.04-1.35.05-4 .05s-2.95-.01-4-.06c-1.03-.05-1.5-.2-1.82-.33-.4-.16-.7-.35-.98.63-.28-.28-.47-.58-.63-.98-.13-.32-.28-.79-.33-1.82C4.01 14.95 4 14.65 4 12s.01-2.95.06-4c.05-1.03.2-1.5.33-1.82.16-.4.35-.7.63-.98.28-.28.58.47.98-.63.32-.13.79-.28 1.82-.33C9.05 3.81 9.35 3.8 12 3.8zm0 7.35c-2.62 0-4.75 2.13-4.75 4.75S9.38 16.65 12 16.65s4.75-2.13 4.75-4.75S14.62 7.15 12 7.15zm0 7.7c-1.63 0-2.95-1.32-2.95-2.95s1.32-2.95 2.95-2.95 2.95 1.32 2.95 2.95-1.32 2.95-2.95 2.95zm4.95-8.1c-.61 0-1.1.49-1.1 1.1s.49 1.1 1.1 1.1 1.1-.49 1.1-1.1-.49-1.1-1.1-1.1z"/></svg></a>
+        </div>
+      </form>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="container">
+    <p>&copy; 2024 Ariel Clean. Todos los derechos reservados.</p>
+    <p class="footer-subtext">Servicios profesionales de limpieza</p>
+  </div>
+</footer>
+
+<!-- ===== MODAL PARA ACTUALIZAR IMÁGENES ===== -->
+<div id="imageModal" class="modal">
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    <h2 id="modalTitle">Actualizar Imagen</h2>
+    <div class="image-upload-container">
+      <input type="file" id="imageUpload" accept="image/*">
+      <img id="imagePreview" class="image-preview" alt="Vista previa">
+    </div>
+    <br><br>
+    <button class="action-btn" id="confirmUpdate">Actualizar Imagen</button>
+  </div>
+</div>
+
+<!-- ===== MODAL DE PRODUCTO MEJORADO ===== -->
+<div id="productModal" class="product-modal">
+  <div class="product-modal-content">
+    <span class="product-modal-close">&times;</span>
+    <div class="product-modal-body">
+      <div class="product-modal-image">
+        <img id="modal-product-image" src="" alt="Producto">
+      </div>
+      <div class="product-modal-details">
+        <h2 id="modal-product-name" class="product-modal-name"></h2>
+        <p id="modal-product-price" class="product-modal-price"></p>
+        <p id="modal-product-description" class="product-description"></p>
+        <div class="quantity-selector">
+          <label for="product-quantity">Cantidad:</label>
+          <input type="number" id="product-quantity" min="1" value="1">
+        </div>
+        <div id="total-price" class="total-price">Total: $0</div>
+        <div class="modal-buttons">
+          <button id="buy-btn" class="modal-btn buy-btn">Comprar</button>
+          <button id="print-btn" class="modal-btn print-btn">Imprimir recibo</button>
+          <button id="whatsapp-btn" class="modal-btn whatsapp-btn-modal">
+            <img src="https://cdn-icons-png.flaticon.com/512/220/220236.png" width="16" alt="WhatsApp"> WhatsApp
+          </button>
+          <button id="close-modal-btn" class="modal-btn close-btn">Cerrar</button>
+        </div>
+        <div id="email-section" style="display:none;">
+          <input type="email" id="customer-email" class="email-input" placeholder="Ingresa tu correo para recibir el recibo">
+          <button id="send-receipt-btn" class="modal-btn print-btn">Enviar recibo por correo</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MODAL DE PAGO BOLT ===== -->
+<div id="boltPaymentModal" class="bolt-payment-modal">
+  <div class="bolt-payment-content">
+    <span class="bolt-payment-close">&times;</span>
+    <h2 style="text-align:center;margin-bottom:20px;">Pago con Bolt</h2>
+    <p style="text-align:center;margin-bottom:20px;">Complete la información para procesar su pago</p>
+    
+    <div style="background:#f5f5f5;padding:15px;border-radius:8px;margin-bottom:20px;">
+      <p style="margin:0;font-weight:bold;">Detalles del pedido:</p>
+      <p id="bolt-product-details" style="margin:5px 0 0 0;"></p>
+      <p id="bolt-total-details" style="margin:5px 0 0 0;font-weight:bold;"></p>
+    </div>
+    
+    <div>
+      <label for="bolt-phone">Número de teléfono para asociar con Bolt:</label>
+      <input type="tel" id="bolt-phone" class="bolt-input" placeholder="Ej: 3121234567" required>
+    </div>
+    
+    <div>
+      <label for="bolt-email">Correo electrónico:</label>
+      <input type="email" id="bolt-email" class="bolt-input" placeholder="tu@email.com" required>
+    </div>
+    
+    <button id="bolt-submit-btn" class="bolt-submit-btn">Iniciar Compra</button>
+  </div>
+</div>
+
+<!-- ===== ANIMACIÓN DE PAGO EXITOSO ===== -->
+<div id="payment-success" class="payment-success">
+  <div class="success-animation">
+    <h2>¡Pago Exitoso!</h2>
+    <p>Tu pedido ha sido procesado correctamente.</p>
+    <p>Recibirás un correo con los detalles de tu compra.</p>
+    <button id="close-success-btn" class="modal-btn close-btn">Cerrar</button>
+  </div>
+</div>
+
+<!-- ===== MODAL PARA AMPLIAR IMÁGENES ===== -->
+<div id="imageZoomModal" class="image-zoom-modal">
+  <span class="image-zoom-close">&times;</span>
+  <div class="image-zoom-nav">
+    <button id="prevImage">&lt;</button>
+    <button id="nextImage">&gt;</button>
+  </div>
+  <img class="image-zoom-content" id="zoomedImage" src="" alt="Imagen ampliada">
+  <div class="image-zoom-caption" id="imageCaption"></div>
+</div>
+
+<script>
+  /* ===== ELEMENTOS PRINCIPALES ===== */
+  const modal = document.getElementById('imageModal');
+  const closeModal = document.querySelector('.close');
+  const imageUpload = document.getElementById('imageUpload');
+  const imagePreview = document.getElementById('imagePreview');
+  const confirmUpdate = document.getElementById('confirmUpdate');
+  const updateHeroBgBtn = document.getElementById('update-hero-bg');
+  const resetBtn = document.getElementById('reset-btn');
+  const publishBtn = document.getElementById('publish-btn');
+  const logo = document.getElementById('logo');
+  const contactLogo = document.getElementById('contact-logo');
+  const slides = document.querySelectorAll('.hero-slide');
+  let currentImageKey = null;
+
+  /* ===== VARIABLES PARA EL ZOOM DE IMÁGENES ===== */
+  const imageZoomModal = document.getElementById('imageZoomModal');
+  const zoomedImage = document.getElementById('zoomedImage');
+  const imageCaption = document.getElementById('imageCaption');
+  const prevImageBtn = document.getElementById('prevImage');
+  const nextImageBtn = document.getElementById('nextImage');
+  const imageZoomClose = document.querySelector('.image-zoom-close');
+  
+  let currentImageIndex = 0;
+  let allImages = [];
+
+  /* ===== VARIABLES PARA E-COMMERCE ===== */
+  const boltPaymentModal = document.getElementById('boltPaymentModal');
+  const boltPaymentClose = document.querySelector('.bolt-payment-close');
+  const boltSubmitBtn = document.getElementById('bolt-submit-btn');
+  let currentProduct = null;
+  let currentQuantity = 1;
+
+  /* ===== FUNCIÓN PARA NAVEGACIÓN POR BOTONES ===== */
+  function scrollToSection(sectionId) {
+    const section = document.getElementById(sectionId);
+    if (section) {
+      // Cerrar el slider si está abierto
+      closeSlider();
+      
+      // Desplazarse suavemente a la sección
+      section.scrollIntoView({ behavior: 'smooth' });
+    }
+  }
+
+  function closeSlider() {
+    // Cerrar el slider moviéndose al slide 1
+    currentSlide = 0;
+    showSlide(currentSlide);
+  }
+
+  /* ===== INICIALIZAR SISTEMA DE ZOOM DE IMÁGENES ===== */
+  function initImageZoom() {
+    // Recolectar TODAS las imágenes que se pueden ampliar
+    allImages = Array.from(document.querySelectorAll(
+      '.editable-img, .product-image, .rectangular-images-grid img, .gallery-grid img'
+    ));
+    
+    console.log('Imágenes encontradas para zoom:', allImages.length);
+    
+    // Agregar event listeners para doble clic
+    allImages.forEach((img, index) => {
+      img.addEventListener('dblclick', function(e) {
+        e.preventDefault();
+        openImageZoom(index);
+      });
+      
+      // También permitir clic en imágenes de productos
+      if (img.classList.contains('product-image')) {
+        img.style.cursor = 'pointer';
+      } else {
+        // Agregar cursor pointer a todas las imágenes para indicar que son clickeables
+        img.style.cursor = 'zoom-in';
+      }
+    });
+    
+    // Event listeners para navegación
+    prevImageBtn.addEventListener('click', showPrevImage);
+    nextImageBtn.addEventListener('click', showNextImage);
+    
+    // Cerrar modal con ESC
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape' && imageZoomModal.style.display === 'block') {
+        closeImageZoom();
+      } else if (e.key === 'ArrowLeft' && imageZoomModal.style.display === 'block') {
+        showPrevImage();
+      } else if (e.key === 'ArrowRight' && imageZoomModal.style.display === 'block') {
+        showNextImage();
+      }
+    });
+    
+    // Cerrar modal al hacer clic en la X o fuera de la imagen
+    imageZoomClose.addEventListener('click', closeImageZoom);
+    imageZoomModal.addEventListener('click', function(e) {
+      if (e.target === imageZoomModal) {
+        closeImageZoom();
+      }
+    });
+  }
+
+  /* ===== FUNCIONES PARA EL ZOOM DE IMÁGENES ===== */
+  function openImageZoom(index) {
+    currentImageIndex = index;
+    const img = allImages[currentImageIndex];
+    
+    zoomedImage.src = img.src;
+    imageCaption.textContent = img.alt || 'Imagen';
+    
+    imageZoomModal.style.display = 'block';
+    document.body.style.overflow = 'hidden'; // Prevenir scroll
+  }
+
+  function closeImageZoom() {
+    imageZoomModal.style.display = 'none';
+    document.body.style.overflow = ''; // Restaurar scroll
+  }
+
+  function showPrevImage() {
+    currentImageIndex = (currentImageIndex - 1 + allImages.length) % allImages.length;
+    const img = allImages[currentImageIndex];
+    
+    zoomedImage.src = img.src;
+    imageCaption.textContent = img.alt || 'Imagen';
+  }
+
+  function showNextImage() {
+    currentImageIndex = (currentImageIndex + 1) % allImages.length;
+    const img = allImages[currentImageIndex];
+    
+    zoomedImage.src = img.src;
+    imageCaption.textContent = img.alt || 'Imagen';
+  }
+
+  /* ===== DETECCIÓN DE SUBDOMINIOS Y REDIRECCIÓN ===== */
+  function handleSubdomainRouting() {
+    const hostname = window.location.hostname;
+    
+    // Si no es localhost y tiene subdominio, redirigir
+    if (!hostname.includes('localhost') && hostname.includes('.') && hostname.split('.').length > 2) {
+      const subdomain = hostname.split('.')[0];
+      
+      console.log('Subdominio detectado:', subdomain);
+      
+      // Pequeño delay para asegurar que la página esté cargada
+      setTimeout(() => {
+        switch(subdomain) {
+          case 'servicios':
+            window.location.hash = '#secondary-content';
+            break;
+          case 'muebles':
+            window.location.hash = '#service-events';
+            break;
+          case 'colchones':
+            window.location.hash = '#service-portrait';
+            break;
+          case 'productos':
+            window.location.hash = '#service-product';
+            break;
+          case 'galeria':
+            window.location.hash = '#gallery';
+            break;
+          case 'contacto':
+            window.location.hash = '#contact';
+            break;
+          default:
+            // Si es el dominio principal, no hacer nada
+            break;
+        }
+      }, 500);
+    }
+  }
+
+  /* ===== PRODUCTOS DEL E-COMMERCE ===== */
+  const products = [
+    {
+      id: 1,
+      name: "Paquete de Limpieza",
+      price: 250000,
+      image: "imagenes/producto_cuadrada_133.jpeg",
+      description: "Nuestro paquete completo de limpieza incluye productos especializados para todo tipo de muebles, tapicería y colchones. Elimina manchas, ácaros y malos olores de manera efectiva y segura."
+    },
+    {
+      id: 2,
+      name: "Aromatizante Ambiental",
+      price: 180000,
+      image: "imagenes/producto_cuadrada_269.jpeg",
+      description: "Aromatizante de larga duración con fragancia fresca que mantiene tus espacios con un agradable aroma por semanas. Ideal para hogares, oficinas y vehículos."
+    },
+    {
+      id: 3,
+      name: "Detergente Concentrado",
+      price: 32000,
+      image: "imagenes/producto_cuadrada_344.jpeg",
+      description: "Detergente concentrado de alta eficacia para ropa de todo tipo. Elimina manchas difíciles mientras cuida las fibras y colores de tus prendas."
+    },
+    {
+      id: 4,
+      name: "Desinfectante Profesional",
+      price: 28000,
+      image: "imagenes/producto_cuadrada_488.jpeg",
+      description: "Desinfectante de grado profesional para espacios. Elimina el 99.9% de bacterias y virus, ideal para baños, cocinas y áreas de alto tráfico."
+    },
+    {
+      id: 5,
+      name: "Limpiador de Vidrios",
+      price: 22000,
+      image: "imagenes/producto_cuadrada_51010.jpeg",
+      description: "Fórmula especial que deja tus vidrios y espejos brillantes sin manchas. No deja residuos y evita la acumulación de polvo."
+    }
+  ];
+
+  /* ===== CARGAR IMAGENES GUARDADAS ===== */
+  function loadSavedImages() {
+    const savedLogo = localStorage.getItem('logoImage');
+    if (savedLogo) {
+      logo.src = savedLogo;
+      contactLogo.src = savedLogo;
+    }
+    slides.forEach((slide, i) => {
+      const key = `slide-${i + 1}Bg`;
+      const saved = localStorage.getItem(key);
+      if (saved) slide.style.backgroundImage = `url(${saved})`;
+    });
+    document.querySelectorAll('.editable-img').forEach(img => {
+      const key = img.getAttribute('data-key');
+      const saved = localStorage.getItem(`image_${key}`);
+      if (saved) img.src = saved;
+    });
+  }
+  loadSavedImages();
+
+  /* ===== INICIALIZAR E-COMMERCE ===== */
+  function initEcommerce() {
+    const productsGrid = document.getElementById('products-grid');
+    
+    products.forEach(product => {
+      const productCard = document.createElement('div');
+      productCard.className = 'product-card';
+      productCard.innerHTML = `
+        <img src="${product.image}" alt="${product.name}" class="product-image">
+        <div class="product-info">
+          <h3 class="product-name">${product.name}</h3>
+          <p class="product-price">$${product.price.toLocaleString()}</p>
+          <button class="view-detail-btn" data-id="${product.id}">Ver Detalle</button>
+        </div>
+      `;
+      productsGrid.appendChild(productCard);
+    });
+
+    // Agregar event listeners a los botones
+    document.querySelectorAll('.view-detail-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        const productId = parseInt(this.getAttribute('data-id'));
+        openProductModal(productId);
+      });
+    });
+
+    // Configurar modal de pago Bolt
+    boltPaymentClose.addEventListener('click', function() {
+      boltPaymentModal.style.display = 'none';
+    });
+
+    boltSubmitBtn.addEventListener('click', processBoltPayment);
+  }
+
+  /* ===== MODAL DE PRODUCTO MEJORADO ===== */
+  function openProductModal(productId) {
+    const product = products.find(p => p.id === productId);
+    if (!product) return;
+
+    currentProduct = product;
+    const modal = document.getElementById('productModal');
+    const productImage = document.getElementById('modal-product-image');
+    const productName = document.getElementById('modal-product-name');
+    const productPrice = document.getElementById('modal-product-price');
+    const productDescription = document.getElementById('modal-product-description');
+    const quantityInput = document.getElementById('product-quantity');
+    const totalPrice = document.getElementById('total-price');
+
+    // Llenar datos del producto
+    productImage.src = product.image;
+    productName.textContent = product.name;
+    productPrice.textContent = `$${product.price.toLocaleString()}`;
+    productDescription.textContent = product.description;
+    quantityInput.value = 1;
+    currentQuantity = 1;
+    updateTotalPrice();
+
+    // Mostrar modal
+    modal.style.display = 'block';
+
+    // Actualizar precio total cuando cambia la cantidad
+    quantityInput.addEventListener('input', function() {
+      currentQuantity = parseInt(this.value) || 1;
+      updateTotalPrice();
+    });
+
+    function updateTotalPrice() {
+      const total = product.price * currentQuantity;
+      totalPrice.textContent = `Total: $${total.toLocaleString()}`;
+    }
+
+    // Botón comprar - ahora abre modal de Bolt
+    document.getElementById('buy-btn').onclick = function() {
+      modal.style.display = 'none';
+      openBoltPaymentModal();
+    };
+
+    // Botón imprimir recibo
+    document.getElementById('print-btn').onclick = function() {
+      document.getElementById('email-section').style.display = 'block';
+    };
+
+    // Botón enviar recibo por correo
+    document.getElementById('send-receipt-btn').onclick = function() {
+      const email = document.getElementById('customer-email').value;
+      if (email) {
+        generateReceipt(product, currentQuantity, email);
+        alert('Recibo enviado a ' + email);
+        document.getElementById('email-section').style.display = 'none';
+      } else {
+        alert('Por favor ingresa un correo válido');
+      }
+    };
+
+    // Botón WhatsApp
+    document.getElementById('whatsapp-btn').onclick = function() {
+      const total = product.price * currentQuantity;
+      const message = `Hola, estoy interesado en comprar ${currentQuantity} unidad(es) de ${product.name} por un total de $${total.toLocaleString()}.`;
+      const encodedMessage = encodeURIComponent(message);
+      window.open(`https://wa.me/573127439018?text=${encodedMessage}`, '_blank');
+    };
+
+    // Botón cerrar
+    document.getElementById('close-modal-btn').onclick = function() {
+      modal.style.display = 'none';
+    };
+
+    // Cerrar modal al hacer clic en la X
+    document.querySelector('.product-modal-close').onclick = function() {
+      modal.style.display = 'none';
+    };
+  }
+
+  /* ===== MODAL DE PAGO BOLT ===== */
+  function openBoltPaymentModal() {
+    if (!currentProduct) return;
+
+    const boltProductDetails = document.getElementById('bolt-product-details');
+    const boltTotalDetails = document.getElementById('bolt-total-details');
+    const total = currentProduct.price * currentQuantity;
+
+    boltProductDetails.textContent = `${currentQuantity} x ${currentProduct.name}`;
+    boltTotalDetails.textContent = `Total: $${total.toLocaleString()}`;
+
+    // Limpiar campos anteriores
+    document.getElementById('bolt-phone').value = '';
+    document.getElementById('bolt-email').value = '';
+
+    boltPaymentModal.style.display = 'block';
+  }
+
+  /* ===== PROCESAR PAGO CON BOLT ===== */
+  function processBoltPayment() {
+    const phone = document.getElementById('bolt-phone').value;
+    const email = document.getElementById('bolt-email').value;
+
+    if (!phone || !email) {
+      alert('Por favor complete todos los campos');
+      return;
+    }
+
+    if (!validatePhone(phone)) {
+      alert('Por favor ingrese un número de teléfono válido');
+      return;
+    }
+
+    if (!validateEmail(email)) {
+      alert('Por favor ingrese un correo electrónico válido');
+      return;
+    }
+
+    // Simular procesamiento de pago
+    boltSubmitBtn.textContent = 'Procesando...';
+    boltSubmitBtn.disabled = true;
+
+    // Simular conexión con Bolt
+    setTimeout(() => {
+      // En un entorno real, aquí se integraría con la API de Bolt
+      const total = currentProduct.price * currentQuantity;
+      const nequiNumber = "3127439018";
+      
+      // Simular redirección a Bolt
+      const boltUrl = `https://bolt.com/payment?amount=${total}&phone=${phone}&email=${encodeURIComponent(email)}`;
+      
+      // En un entorno real, se redirigiría a Bolt
+      // window.location.href = boltUrl;
+      
+      // Por ahora, simulamos el proceso
+      simulateBoltPayment(phone, email, total);
+    }, 2000);
+  }
+
+  function simulateBoltPayment(phone, email, total) {
+    // Simular proceso de pago
+    alert(`Redirigiendo a Bolt para procesar pago de $${total.toLocaleString()}\n\nNúmero asociado: ${phone}\nCorreo: ${email}`);
+    
+    // Simular confirmación de pago después de 3 segundos
+    setTimeout(() => {
+      // Simular confirmación exitosa
+      completeBoltPayment(phone, email, total);
+    }, 3000);
+  }
+
+  function completeBoltPayment(phone, email, total) {
+    // Cerrar modal de Bolt
+    boltPaymentModal.style.display = 'none';
+    
+    // Mostrar éxito
+    showPaymentSuccess();
+    
+    // Enviar correos de confirmación
+    sendConfirmationEmails(phone, email, total);
+    
+    // Enviar notificación por WhatsApp
+    sendWhatsAppConfirmation(phone, total);
+    
+    // Resetear botón
+    boltSubmitBtn.textContent = 'Iniciar Compra';
+    boltSubmitBtn.disabled = false;
+  }
+
+  function sendConfirmationEmails(phone, email, total) {
+    // En un entorno real, aquí se enviarían correos reales
+    // Por ahora, simulamos el envío
+    
+    const customerEmailContent = `
+      Asunto: Confirmación de Pago - Ariel Clean
+      
+      Hola,
+      
+      Tu pago ha sido procesado exitosamente.
+      
+      Detalles del pedido:
+      - Producto: ${currentProduct.name}
+      - Cantidad: ${currentQuantity}
+      - Total: $${total.toLocaleString()}
+      - Fecha: ${new Date().toLocaleString()}
+      - Método: Bolt/Nequi
+      
+      ¡Gracias por tu compra!
+      
+      Atentamente,
+      Equipo Ariel Clean
+    `;
+    
+    const adminEmailContent = `
+      Asunto: Nuevo Pago Recibido - Ariel Clean
+      
+      Se ha recibido un nuevo pago:
+      
+      Detalles del cliente:
+      - Teléfono: ${phone}
+      - Correo: ${email}
+      
+      Detalles del pedido:
+      - Producto: ${currentProduct.name}
+      - Cantidad: ${currentQuantity}
+      - Total: $${total.toLocaleString()}
+      - Fecha: ${new Date().toLocaleString()}
+      - Método: Bolt/Nequi
+    `;
+    
+    console.log("Correo enviado al cliente:", email);
+    console.log(customerEmailContent);
+    
+    console.log("Correo enviado al administrador: davidnoamorales@gmail.com");
+    console.log(adminEmailContent);
+    
+    // En un entorno real, usaríamos un servicio como SendGrid o EmailJS
+    // Para implementación real, necesitarías:
+    // 1. Una cuenta en servicio de envío de correos (SendGrid, Mailgun, etc.)
+    // 2. Configurar las credenciales API
+    // 3. Implementar la lógica de envío
+  }
+
+  function sendWhatsAppConfirmation(phone, total) {
+    // En un entorno real, aquí se enviaría un mensaje de WhatsApp
+    // usando la API de WhatsApp Business
+    
+    const message = `✅ Pago confirmado por $${total.toLocaleString()}. Gracias por tu compra en Ariel Clean.`;
+    const encodedMessage = encodeURIComponent(message);
+    
+    // Abrir WhatsApp con el mensaje predefinido
+    window.open(`https://wa.me/57${phone}?text=${encodedMessage}`, '_blank');
+  }
+
+  /* ===== FUNCIONES DE VALIDACIÓN ===== */
+  function validatePhone(phone) {
+    const phoneRegex = /^[0-9]{10}$/;
+    return phoneRegex.test(phone);
+  }
+
+  function validateEmail(email) {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  }
+
+  /* ===== FUNCIONES DEL FORMULARIO DE CONTACTO ===== */
+  function sendContactInfo() {
+    const name = document.getElementById('name').value;
+    const phone = document.getElementById('phone').value;
+    const email = document.getElementById('email').value;
+    const message = document.getElementById('message').value;
+
+    if (!name || !phone || !email || !message) {
+      alert('Por favor complete todos los campos');
+      return;
+    }
+
+    if (!validatePhone(phone)) {
+      alert('Por favor ingrese un número de teléfono válido (10 dígitos)');
+      return;
+    }
+
+    if (!validateEmail(email)) {
+      alert('Por favor ingrese un correo electrónico válido');
+      return;
+    }
+
+    // Enviar correo de bienvenida
+    sendWelcomeEmail(name, email, phone);
+    
+    // Enviar mensaje de WhatsApp
+    sendWelcomeWhatsApp(phone, name);
+    
+    // En un entorno real, también podrías enviar un SMS aquí
+    
+    alert('¡Gracias por contactarnos! Te hemos enviado información sobre nuestros servicios y ofertas.');
+    
+    // Limpiar formulario
+    document.getElementById('contact-form').reset();
+  }
+
+  function sendWelcomeEmail(name, email, phone) {
+    // En un entorno real, aquí se enviaría un correo con imágenes y ofertas
+    // Por ahora, simulamos el envío
+    
+    const emailContent = `
+      Asunto: ¡Bienvenido a Ariel Clean! - Ofertas Especiales
+      
+      Hola ${name},
+      
+      ¡Gracias por contactarnos!
+      
+      En Ariel Clean nos especializamos en servicios profesionales de limpieza:
+      - Lavado de muebles y colchones
+      - Limpieza de tapicería
+      - Productos de limpieza especializados
+      
+      OFERTAS ESPECIALES PARA TI:
+      🔹 10% de descuento en tu primer servicio
+      🔹 Paquete completo de limpieza por solo $500,000
+      🔹 Productos de limpieza con entrega gratuita
+      
+      Visita nuestro sitio web: [URL de tu página]
+      
+      Contáctanos:
+      📞 ${phone}
+      ✉️ ${email}
+      
+      ¡Estamos para servirte!
+      
+      Atentamente,
+      Equipo Ariel Clean
+    `;
+    
+    console.log("Correo de bienvenida enviado a:", email);
+    console.log(emailContent);
+    
+    // En un entorno real, implementarías el envío real de correo aquí
+  }
+
+  function sendWelcomeWhatsApp(phone, name) {
+    const message = `¡Hola ${name}! 👋 
+
+Gracias por contactar a *Ariel Clean* 🧼✨
+
+Te ofrecemos:
+• Lavado profesional de muebles
+• Limpieza de colchones 
+• Productos de limpieza especializados
+• Servicio a domicilio
+
+*OFERTA ESPECIAL:* 10% de descuento en tu primer servicio!
+
+📍 Bogotá - Lunes a Domingo 7am a 7pm
+
+¿En qué podemos ayudarte? 😊`;
+
+    const encodedMessage = encodeURIComponent(message);
+    
+    // Abrir WhatsApp con el mensaje predefinido
+    window.open(`https://wa.me/573127439018?text=${encodedMessage}`, '_blank');
+  }
+
+  /* ===== MOSTRAR ANIMACIÓN DE PAGO EXITOSO ===== */
+  function showPaymentSuccess() {
+    const paymentSuccess = document.getElementById('payment-success');
+    paymentSuccess.style.display = 'flex';
+    
+    // Cerrar animación de éxito
+    document.getElementById('close-success-btn').onclick = function() {
+      paymentSuccess.style.display = 'none';
+    };
+  }
+
+  /* ===== GENERAR RECIBO ===== */
+  function generateReceipt(product, quantity, email) {
+    const total = product.price * quantity;
+    
+    // Crear contenido del recibo
+    const receiptContent = `
+      <html>
+        <head>
+          <title>Recibo de Compra - Ariel Clean</title>
+          <style>
+            body { font-family: Arial, sans-serif; margin: 20px; }
+            .header { text-align: center; margin-bottom: 20px; }
+            .details { margin-bottom: 20px; }
+            .total { font-weight: bold; font-size: 1.2em; }
+          </style>
+        </head>
+        <body>
+          <div class="header">
+            <h1>Ariel Clean</h1>
+            <p>Bogotá - Lunes a Domingo 7am a 7pm</p>
+          </div>
+          <div class="details">
+            <h2>Recibo de Compra</h2>
+            <p><strong>Producto:</strong> ${product.name}</p>
+            <p><strong>Cantidad:</strong> ${quantity}</p>
+            <p><strong>Precio unitario:</strong> $${product.price.toLocaleString()}</p>
+            <p class="total"><strong>Total:</strong> $${total.toLocaleString()}</p>
+            <p><strong>Fecha:</strong> ${new Date().toLocaleDateString()}</p>
+          </div>
+          <p>¡Gracias por su compra!</p>
+        </body>
+      </html>
+    `;
+    
+    // En un entorno real, aquí se enviaría el recibo por correo
+    console.log("Recibo generado para:", email);
+    console.log(receiptContent);
+    
+    // Simulación de envío de correo
+    alert(`Recibo enviado a ${email}`);
+  }
+
+  /* ===== BANNER ROTATIVO ===== */
+  function initRotatingBanner() {
+    const messages = document.querySelectorAll('.banner-message');
+    let currentIndex = 0;
+    
+    function showNextMessage() {
+      messages.forEach(msg => msg.classList.remove('active'));
+      messages[currentIndex].classList.add('active');
+      
+      currentIndex = (currentIndex + 1) % messages.length;
+    }
+    
+    // Mostrar primer mensaje
+    showNextMessage();
+    
+    // Cambiar mensaje cada 5 segundos
+    setInterval(showNextMessage, 5000);
+  }
+
+  /* ===== ACTUALIZAR FONDOS DE SLIDES ===== */
+  updateHeroBgBtn.addEventListener('click', () => {
+    const num = prompt("¿Qué slide quieres actualizar? (1-5):");
+    if (num >= 1 && num <= 5) {
+      currentImageKey = `slide-${num}Bg`;
+      modal.style.display = 'block';
+      document.getElementById('modalTitle').textContent = `Actualizar fondo del slide ${num}`;
+    }
+  });
+
+  /* ===== ACTUALIZAR LOGO ===== */
+  document.getElementById('update-logo-btn').addEventListener('click', () => {
+    currentImageKey = 'logo';
+    modal.style.display = 'block';
+    document.getElementById('modalTitle').textContent = 'Actualizar Logo';
+  });
+
+  /* ===== BOTONES ACTUALIZAR IMÁGENES EN SECCIONES ===== */
+  document.querySelectorAll('.update-img-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      currentImageKey = btn.getAttribute('data-target');
+      modal.style.display = 'block';
+      document.getElementById('modalTitle').textContent = 'Actualizar Imagen';
+    });
+  });
+
+  /* ===== MODAL ===== */
+  closeModal.onclick = () => modal.style.display = 'none';
+  window.onclick = e => { 
+    if (e.target == modal) modal.style.display = 'none';
+    if (e.target == boltPaymentModal) boltPaymentModal.style.display = 'none';
+  };
+
+  imageUpload.addEventListener('change', e => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = ev => {
+        imagePreview.src = ev.target.result;
+        imagePreview.style.display = 'block';
+      };
+      reader.readAsDataURL(file);
+    }
+  });
+
+  confirmUpdate.addEventListener('click', () => {
+    if (imagePreview.style.display === 'block') {
+      const newSrc = imagePreview.src;
+      if (currentImageKey === 'logo') {
+        logo.src = newSrc;
+        contactLogo.src = newSrc;
+        localStorage.setItem('logoImage', newSrc);
+      } else if (currentImageKey.startsWith('slide-')) {
+        const slideIndex = parseInt(currentImageKey.split('-')[1]) - 1;
+        slides[slideIndex].style.backgroundImage = `url(${newSrc})`;
+        localStorage.setItem(currentImageKey, newSrc);
+      } else {
+        document.querySelectorAll(`.editable-img[data-key="${currentImageKey}"]`).forEach(img => {
+          img.src = newSrc;
         });
-    </script>
+        localStorage.setItem(`image_${currentImageKey}`, newSrc);
+      }
+      modal.style.display = 'none';
+    } else {
+      alert('Selecciona una imagen primero.');
+    }
+  });
+
+  /* ===== RESET ===== */
+  resetBtn.addEventListener('click', () => {
+    if (confirm('¿Borrar todas las imágenes guardadas?')) {
+      Object.keys(localStorage).forEach(k => {
+        if (k.startsWith('slide-') || k === 'logoImage' || k.startsWith('image_')) localStorage.removeItem(k);
+      });
+      location.reload();
+    }
+  });
+
+  /* ===== PUBLICAR ===== */
+  publishBtn.addEventListener('click', () => {
+    const pub = window.open('', '_blank');
+    pub.document.write(`
+      <!DOCTYPE html>
+      <html lang="es">
+      <head>
+        <meta charset="UTF-8">
+        <title>Ariel Clean - Servicios de Limpieza</title>
+        <style>
+          body{font-family:Arial,sans-serif;background:#f4f4f4;text-align:center;padding:50px;}
+          h1{color:#333;}
+        </style>
+      </head>
+      <body>
+        <h1>🎉 Página publicada con éxito</h1>
+        <p>Esta es una versión de demostración. Aquí se mostraría tu sitio completo.</p>
+      </body>
+      </html>
+    `);
+    pub.document.close();
+  });
+
+  /* ===== SLIDER AUTOMÁTICO MEJORADO ===== */
+  let currentSlide = 0;
+  // MODIFICACIÓN: Tiempo del slide 5 aumentado a 18 minutos (1080000 ms)
+  const tiempos = [30000, 50000, 35000, 0, 1080000]; // ms
+  const track = document.querySelector('.hero-slides');
+  let slideTimeout;
+
+  function showSlide(idx) {
+    // Detener timeout anterior
+    clearTimeout(slideTimeout);
+    
+    // Actualizar slide activo
+    track.style.transform = `translateX(-${idx * 20}%)`;
+    slides.forEach(s => s.classList.remove('active'));
+    slides[idx].classList.add('active');
+
+    // Manejar video
+    const vid = slides[idx].querySelector('video');
+    if (vid) {
+      vid.currentTime = 0;
+      vid.play();
+      vid.onended = () => moveSlide(1);
+    } else {
+      // Configurar timeout para siguiente slide
+      if (tiempos[idx] > 0) {
+        slideTimeout = setTimeout(() => moveSlide(1), tiempos[idx]);
+      }
+    }
+  }
+
+  function moveSlide(dir) {
+    currentSlide = (currentSlide + dir + slides.length) % slides.length;
+    showSlide(currentSlide);
+  }
+
+  // Inicializar componentes
+  document.addEventListener('DOMContentLoaded', function() {
+    initEcommerce();
+    initRotatingBanner();
+    initImageZoom(); // Inicializar el sistema de zoom de imágenes
+    handleSubdomainRouting(); // Manejar redirección por subdominios
+    showSlide(0);
+  });
+</script>
+
 </body>
 </html>
+
